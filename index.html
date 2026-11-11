@@ -2,153 +2,202 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Liquidador Retenciones Mistrató</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-  /* Layout: una sola columna centrada, pasos como barra de progreso fina; la liquidación es una tabla contable sobre negro con acento champaña. */
+  /* Guía «Vidrio oscuro»: contenido sobre fondo casi negro, paneles de vidrio translúcido con filo de luz, un solo acento magenta, lima solo para foco. */
   :root{
-    --bg:#0a0a0b; --surface:#141416; --surface2:#1c1c1f; --line:#2a2a2f; --line2:#3a3a41;
-    --fg:#f2f2ef; --muted:#b4b4ba; --dim:#8c8c94;
-    --gold:#d4b36a; --gold2:#b8975a; --gold-dim:rgba(212,179,106,.14); --gold-hover:#e3c47c; --on-gold:#111111;
-    --ok:#7fc8a0; --warn:#e2b86a; --warn-bg:rgba(226,184,106,.18); --bad:#e07c7c; --bad-bg:rgba(224,124,124,.12); --bad-fg:#f1c3c3;
-    --display:'Cormorant Garamond',Georgia,'Times New Roman',serif; --body:'Manrope',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    --w-body:400; --w-strong:600; --w-label:600;
+    --bg:#07080a; --bg-2:#0d0f12; --bg-stage:#05070a;
+    --ink:#f3f2ee; --ink-2:rgba(243,242,238,.70); --ink-3:rgba(243,242,238,.56); --ink-4:rgba(243,242,238,.18);
+    --glass:rgba(255,255,255,.055); --glass-2:rgba(255,255,255,.085); --glass-3:rgba(255,255,255,.14);
+    --stroke:rgba(255,255,255,.12); --stroke-2:rgba(255,255,255,.2);
+    --magenta:#ff058a; --magenta-soft:rgba(255,5,138,.14); --magenta-ink:#ff6fb5; --lime:#e8ff01; --cyan:#2de0e6;
+    --ok:#9be15d; --warn:#ffc531; --bad:#ff3b5c; --info:#2de0e6; --none:#7a8494;
+    --ok-bg:rgba(155,225,93,.10); --warn-bg:rgba(255,197,49,.12); --bad-bg:rgba(255,59,92,.10);
+    --radius:22px; --radius-s:14px; --radius-xs:10px;
+    --blur:saturate(160%) blur(22px);
+    --glass-grad:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.035));
+    --glass-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 30px 60px -30px rgba(0,0,0,.65);
+    --f-display:"Inter Tight",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+    --ease:cubic-bezier(.2,.7,.1,1);
+    --pill-bg:var(--ink); --pill-fg:#0a0a0a; --on-accent:#fff;
+    --w-body:400; --w-strong:600;
+    --field-bg:rgba(10,12,15,.55);
     color-scheme:dark;
   }
   :root[data-theme="light"]{
-    --bg:#f3f6f3; --surface:#ffffff; --surface2:#eef3ee; --line:#d3dcd4; --line2:#b7c4b9;
-    --fg:#13201a; --muted:#3a4a40; --dim:#5f6f65;
-    --gold:#1e6b3f; --gold2:#2a8a52; --gold-dim:rgba(30,107,63,.10); --gold-hover:#2a8a52; --on-gold:#ffffff;
-    --ok:#1e6b3f; --warn:#8a5a00; --warn-bg:rgba(138,90,0,.12); --bad:#b3261e; --bad-bg:rgba(179,38,30,.08); --bad-fg:#8c1d16;
-    --w-body:500; --w-strong:700; --w-label:700;
+    --bg:#eef0f3; --bg-2:#ffffff; --bg-stage:#e6e9ee;
+    --ink:#0d0f12; --ink-2:rgba(13,15,18,.78); --ink-3:rgba(13,15,18,.66); --ink-4:rgba(13,15,18,.16);
+    --glass:rgba(255,255,255,.55); --glass-2:rgba(255,255,255,.72); --glass-3:rgba(255,255,255,.92);
+    --stroke:rgba(13,15,18,.12); --stroke-2:rgba(13,15,18,.22);
+    --magenta:#d80072; --magenta-soft:rgba(216,0,114,.10); --magenta-ink:#b8005f; --lime:#5a6a00;
+    --ok:#2f7a1f; --warn:#8a5a00; --bad:#b3122f; --info:#0a7f85; --none:#5e6673;
+    --ok-bg:rgba(47,122,31,.10); --warn-bg:rgba(138,90,0,.12); --bad-bg:rgba(179,18,47,.08);
+    --glass-grad:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.6));
+    --glass-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 30px 60px -30px rgba(0,0,0,.25);
+    --pill-bg:#0d0f12; --pill-fg:#f3f2ee; --on-accent:#fff;
+    --w-body:500; --w-strong:700;
+    --field-bg:rgba(255,255,255,.8);
     color-scheme:light;
   }
-  *{box-sizing:border-box} html,body{height:100%} [hidden]{display:none!important}
-  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;font-weight:var(--w-body);line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
-  header{max-width:1040px;margin:0 auto;padding:30px 0 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
-  header h1{font-family:var(--display);font-weight:500;font-size:34px;margin:0;letter-spacing:.01em;line-height:1.05;text-wrap:balance}
-  header h1 em{font-style:italic;color:var(--gold)}
-  header .sub{color:var(--muted);font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
-  header .vig{font-size:12px;color:var(--dim);text-align:right;letter-spacing:.06em;text-transform:uppercase}
+  *{box-sizing:border-box} [hidden]{display:none!important} html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-display);font-size:15px;line-height:1.5;font-weight:var(--w-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));padding-block:0 40px;
+    background-image:radial-gradient(60% 50% at 15% 0%,rgba(255,5,138,.14),transparent 60%),radial-gradient(50% 40% at 95% 20%,rgba(45,224,230,.10),transparent 60%),radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.45));background-attachment:fixed}
+  :root[data-theme="light"] body{background-image:radial-gradient(60% 50% at 15% 0%,rgba(216,0,114,.10),transparent 60%),radial-gradient(50% 40% at 95% 20%,rgba(10,127,133,.10),transparent 60%)}
+  button,input,select,textarea{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:8px}
+  ::selection{background:var(--magenta);color:#fff}
+  h1,h2,h3{font-weight:800;letter-spacing:-.04em;line-height:1.05;margin:0}
+  .num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  /* vidrio */
+  .glass,.card,header,.totales .tb,.aprob,.r383,.iva-row,.lc,.noap,.seg-box,.r383-out,.ciiu-res,.gfin{position:relative;background:var(--glass-grad);border:1px solid var(--stroke);border-radius:var(--radius);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--glass-shadow)}
+  .card::before,header::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(160deg,rgba(255,255,255,.35),rgba(255,255,255,0) 38%,rgba(255,255,255,0) 70%,rgba(255,255,255,.12));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ .card,header,.aprob,.r383,.lc,.noap,.seg{background:rgba(17,19,23,.92)} :root[data-theme="light"] .card,:root[data-theme="light"] header{background:rgba(255,255,255,.96)} }
+  /* cabecera */
+  header{max-width:1040px;margin:14px auto 0;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;animation:rise .6s var(--ease) both}
+  header h1{font-size:26px} header h1 em{font-style:normal;color:var(--magenta-ink)}
+  header .sub{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-top:6px}
+  .hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:8px} .hdr-ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .vig{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:right}
   .wrap{max-width:1040px;margin:0 auto}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:26px 28px} :root[data-theme="light"] .card{box-shadow:0 1px 3px rgba(0,0,0,.06)} :root[data-theme="light"] input[type=text],:root[data-theme="light"] input[type=number],:root[data-theme="light"] select,:root[data-theme="light"] textarea{background:#fff;border-color:#9fb0a4}
-  .card h2{font-family:var(--display);font-weight:500;font-size:26px;margin:0 0 18px;line-height:1.1}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px 22px}
-  label.f{display:block;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:var(--w-label)}
-  input[type=text],input[type=number],select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line2);border-radius:3px;font-size:15px;background:var(--surface2);color:var(--fg);font-family:var(--body)}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim)}
-  input[type=number]{font-variant-numeric:tabular-nums}
-  .seg{display:flex;gap:0;border:1px solid var(--line2);border-radius:3px;overflow:hidden}
-  .seg button{flex:1;min-width:0;padding:10px 8px;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;font-family:var(--body);border-right:1px solid var(--line2)}
-  .seg button:last-child{border-right:0} .seg button.on{background:var(--gold);color:var(--on-gold);font-weight:600}
-  .seg button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
-  .grupos{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:16px}
-  .grupo{text-align:left;border:1px solid var(--line2);background:var(--surface2);color:var(--fg);border-radius:3px;padding:12px 14px;cursor:pointer;font-family:var(--body);min-width:0}
-  .grupo b{display:block;font-size:14px;font-weight:var(--w-strong)} .grupo span{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
-  .grupo:hover{border-color:var(--gold2)} .grupo.on{border-color:var(--gold);background:var(--gold-dim)}
-  .bc{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:12px;min-height:18px} .bc span{background:var(--surface2);border:1px solid var(--line);padding:3px 8px;border-radius:2px} .bc i{color:var(--dim);font-style:normal}
-  .bc .lnk{background:none;border:0;color:var(--gold);cursor:pointer;font-size:12px;font-family:var(--body);padding:3px 6px;text-decoration:underline}
-  .gq{font-family:var(--display);font-size:22px;margin:4px 0 6px;line-height:1.2} .gq b{color:var(--gold)}
-  .gfin p{font-size:14px;line-height:1.5;margin:8px 0;color:var(--fg)} .gfin p b{color:var(--gold)}
-  #guia .opts{margin-top:12px}
-  .opt .cu{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12.5px;line-height:1.45;color:var(--muted)} .opt .cu b{color:var(--gold);font-weight:var(--w-strong);display:inline}
-  .nosure{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted);padding:8px 0} .nosure button{font-size:12.5px;padding:8px 12px}
-  .sel{margin-top:16px;padding:12px 14px;border-left:2px solid var(--gold);background:var(--gold-dim);font-size:14px} .sel .muted{color:var(--muted);font-size:12.5px}
-  .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:16px}
-  .opt{border:1px solid var(--line);border-radius:3px;padding:12px 14px;cursor:pointer;background:var(--surface2);min-width:0}
-  .opt:hover{border-color:var(--gold2)} .opt.on{border-color:var(--gold);background:var(--gold-dim)}
-  .opt b{display:block;font-size:14px;font-weight:var(--w-strong);margin-bottom:3px} .opt span{font-size:12.5px;color:var(--muted);line-height:1.4}
-  .btns{display:flex;gap:10px;justify-content:space-between;margin-top:24px;flex-wrap:wrap;align-items:center}
-  button.p{background:var(--gold);color:var(--on-gold);border:0;padding:12px 22px;border-radius:3px;font-size:14px;cursor:pointer;font-weight:700;letter-spacing:.04em;font-family:var(--body)}
-  button.p:hover{background:var(--gold-hover)} button.s{background:transparent;color:var(--fg);border:1px solid var(--line2);padding:12px 18px;border-radius:3px;font-size:14px;cursor:pointer;font-family:var(--body)}
-  button.s:hover{border-color:var(--gold2)} button:disabled{opacity:.4;cursor:not-allowed} button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .hint{font-size:12.5px;color:var(--dim);margin-top:5px;line-height:1.45;font-weight:var(--w-body)}
-  .nota{background:var(--gold-dim);border-left:2px solid var(--gold);padding:10px 14px;font-size:13px;margin-top:14px;color:var(--fg);line-height:1.45}
-  .err{background:var(--bad-bg);border-left:2px solid var(--bad);padding:10px 14px;font-size:13px;margin-top:10px;color:var(--bad-fg)}
-  .tablebox{overflow-x:auto;margin-top:18px;min-width:0}
-  table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
-  th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
-  th{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:var(--w-label);border-bottom:1px solid var(--line2)}
-  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-  tr.off td{color:var(--dim)} td.motivo{font-size:12.5px;color:var(--muted);max-width:320px;line-height:1.4} tr.off td.motivo{color:var(--dim)}
-  td .norma{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
-  td input.t{width:92px;padding:5px 8px;font-size:13px;text-align:right}
-  td .unit{font-size:12px;color:var(--muted);margin-left:3px} td.num:has(input.t){white-space:nowrap} td input.t{width:72px}
-  .tag{display:inline-block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;background:var(--line);color:var(--muted);margin-left:6px;vertical-align:middle}
-  .tag.ed{background:var(--warn-bg);color:var(--warn)}
-  tfoot td{border-bottom:0;border-top:1px solid var(--line2);font-size:15px} .tot{font-weight:700} .neto{color:var(--gold);font-family:var(--display);font-size:24px;font-weight:600}
-  .ciiu-res{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:3px;margin-top:8px;background:var(--surface2)}
-  .ciiu-res div{padding:9px 12px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;gap:12px;font-size:14px;min-width:0}
-  .ciiu-res div:last-child{border-bottom:0} .ciiu-res div:hover{background:var(--gold-dim)} .ciiu-res div.on{background:var(--gold-dim);box-shadow:inset 2px 0 0 var(--gold)}
-  .ciiu-res .tar{font-weight:700;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums} .ciiu-res span:first-child{min-width:0}
-  .noti{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px} .noti button{font-size:12.5px;padding:8px 12px}
-  .contrato-box{grid-column:1/-1} .grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px} @media (max-width:520px){.grid2{grid-template-columns:1fr 1fr}}
-  .iva-box{grid-column:1/-1} .r383{grid-column:1/-1;border:1px solid var(--line);border-radius:3px;padding:14px 16px;background:var(--surface2)} .r383 .grid{gap:14px} .r383-out{margin-top:14px;padding:12px 14px;border:1px dashed var(--line2);border-radius:3px;background:var(--surface)} .r383-out .kv{grid-template-columns:max-content 1fr} .r383-out .gold{color:var(--gold)} .r383 .sw{font-size:13px;color:var(--fg);gap:10px;align-items:flex-start} .r383 .sw input{accent-color:var(--gold);margin-top:3px}
-  .iva-row{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;align-items:end;padding:10px 12px;border:1px solid var(--line);border-radius:3px;background:var(--surface2);margin-bottom:8px}
-  .iva-row .iva-val{padding:11px 0;font-variant-numeric:tabular-nums;font-weight:600;color:var(--gold)} .iva-row button.x{background:transparent;border:1px solid var(--line2);color:var(--muted);border-radius:3px;width:38px;height:42px;cursor:pointer;font-size:18px}
-  .iva-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px} .iva-foot button{font-size:13px;padding:9px 12px} .iva-tot{font-size:14px;color:var(--muted)} .iva-tot b{color:var(--fg);font-size:16px;font-variant-numeric:tabular-nums;margin-left:6px}
-  input.money{text-align:right;font-variant-numeric:tabular-nums}
-  @media (max-width:760px){ .iva-row{grid-template-columns:1fr 1fr;} .iva-row>div:first-child{grid-column:1/-1} .iva-row button.x{width:100%} }
-  .aprob{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:16px;padding:16px 18px;border-radius:3px;background:var(--surface2);border:1px dashed var(--line2)}
-  .aprob .big{font-family:var(--display);font-size:40px;font-weight:600;color:var(--gold);line-height:1} .aprob .big small{font-family:var(--body);font-size:13px;color:var(--muted);margin-left:4px}
-  .aprob.ok{border:1px solid var(--ok)} .aprob .estado{font-size:12px;color:var(--muted)} .aprob.ok .estado{color:var(--ok)}
-  .kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;font-size:14px;margin-bottom:6px} .kv b{color:var(--muted);font-weight:var(--w-label);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-top:2px} .kv span{min-width:0;overflow-wrap:anywhere}
-  .seg-box{margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:3px;font-size:13px;color:var(--muted)} .seg-box b{color:var(--fg)}
-  .toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--gold);color:var(--on-gold);padding:10px 18px;border-radius:3px;font-size:13px;font-weight:600;display:none;z-index:10;max-width:90vw}
-  .sw input{accent-color:var(--gold)}
-  .hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:10px} .hdr-ctl{display:flex;gap:8px;align-items:center}
-  .seg.tema{width:84px;flex:none} .seg.tema button{font-size:15px;padding:7px 0;line-height:1}
-  .seg.modo{width:280px;max-width:100%} .seg.modo button{font-size:12px;padding:8px 6px;letter-spacing:.04em}
-  body.sin details.help:not(.keep), body.sin .intro, body.sin .hint{display:none}
-  @media (max-width:520px){ .hdr-r{align-items:flex-start;width:100%} .vig{text-align:left} }
-  .intro{color:var(--muted);font-size:14px;margin:-6px 0 18px;max-width:64ch;line-height:1.5}
-  details.help{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.5;font-weight:var(--w-body)}
-  details.help summary{cursor:pointer;color:var(--gold);font-size:12px;letter-spacing:.04em;list-style:none;display:inline-flex;align-items:center;gap:6px}
-  details.help summary::before{content:"?";display:inline-grid;place-items:center;width:16px;height:16px;border:1px solid var(--gold);border-radius:50%;font-size:10px;font-weight:700}
-  details.help summary::-webkit-details-marker{display:none} details.help[open] summary{margin-bottom:6px}
-  details.help b{color:var(--fg);font-weight:var(--w-strong)} details.help i{color:var(--gold);font-style:normal}
-  .fine{font-size:12px;color:var(--dim);margin-top:12px;line-height:1.5}
-  footer .credit{display:block;margin-top:10px;color:var(--gold2);font-size:11.5px;letter-spacing:.06em}
-  footer{max-width:1040px;margin:26px auto 0;font-size:11.5px;color:var(--dim);letter-spacing:.04em;line-height:1.6}
-  @media (prefers-reduced-motion:no-preference){ .card{animation:fade .25s ease} @keyframes fade{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}} }
-
-  /* ---- pasos ---- */
-  .steps{display:flex;gap:4px;margin:18px 0 6px}
-  .steps div{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--dim);padding-top:10px;border-top:2px solid var(--line);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
-  .steps div i{font-style:normal;width:26px;height:26px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:12px;font-weight:700}
+  /* control segmentado */
+  .seg{display:inline-flex;padding:4px;gap:2px;border-radius:999px;background:rgba(10,12,15,.5);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);max-width:100%}
+  :root[data-theme="light"] .seg{background:rgba(255,255,255,.6)}
+  .seg button{flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:34px;padding:0 14px;border-radius:999px;border:0;background:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-2);transition:background .3s,color .3s;white-space:nowrap}
+  .seg button.on{background:var(--pill-bg);color:var(--pill-fg)} .seg button:not(.on):hover{color:var(--ink);background:rgba(255,255,255,.06)}
+  .seg.modo{width:auto} .seg.tema button{padding:0 12px;font-size:15px}
+  #segPersona,#segIVA,#segDecl,#segExICA,#segAnt,#segTerr,#segTieneIva,#segP1{display:flex;width:100%}
+  /* pasos */
+  .steps{display:flex;gap:6px;margin:18px 0 6px}
+  .steps div{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-3);padding-top:10px;border-top:1px solid var(--stroke);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;transition:color .3s,border-color .3s}
+  .steps div i{font-style:normal;width:28px;height:28px;border-radius:50%;border:1px solid var(--stroke-2);display:grid;place-items:center;font-size:12px;font-weight:500;transition:background .3s,color .3s}
   .steps div span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-  .steps div.on{color:var(--gold);border-top-color:var(--gold)} .steps div.on i{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
-  .steps div.done{color:var(--muted);border-top-color:var(--gold2)} .steps div.done i{border-color:var(--gold2);color:var(--gold)}
-  .step-now{display:none;font-family:var(--display);font-size:20px;color:var(--gold);margin:4px 0 12px;text-align:center}
-  /* ---- totales y tarjetas de liquidación ---- */
-  .totales{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px} .totales .tb{overflow:hidden}
-  .totales .tb{background:var(--surface2);border:1px solid var(--line2);border-radius:4px;padding:12px 14px;min-width:0}
-  .totales .tb b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
-  .totales .tb span{font-family:var(--display);font-size:clamp(18px,6.2vw,26px);white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums;color:var(--fg);overflow-wrap:anywhere} .totales .tb.neto span{color:var(--gold)} .totales .tb.neto{border-color:var(--gold2)}
+  .steps div.on{color:var(--ink);border-top-color:var(--magenta)} .steps div.on i{background:var(--magenta);color:#fff;border-color:var(--magenta);box-shadow:0 10px 30px -10px rgba(255,5,138,.7)}
+  .steps div.done{color:var(--ink-2);border-top-color:var(--stroke-2)} .steps div.done i{border-color:var(--magenta);color:var(--magenta-ink)}
+  .step-now{display:none;font-weight:700;letter-spacing:-.02em;font-size:17px;margin:6px 0 12px;text-align:center}
+  /* tarjeta principal */
+  .card{padding:26px 28px;margin-top:14px;animation:rise .6s var(--ease) both}
+  .card h2{font-size:24px;margin:0 0 16px;text-wrap:balance}
+  .intro{color:var(--ink-2);font-size:14px;margin:-6px 0 18px;max-width:64ch}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px 22px}
+  label.f{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+  input[type=text],input[type=number],select,textarea{width:100%;min-height:44px;padding:0 16px;border:1px solid var(--stroke);border-radius:999px;font-size:14px;background:var(--field-bg);color:var(--ink);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);transition:border-color .3s,box-shadow .3s}
+  textarea{border-radius:var(--radius-s);padding:12px 16px}
+  input::placeholder,textarea::placeholder{color:var(--ink-3)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(232,255,1,.55);box-shadow:0 0 0 3px rgba(232,255,1,.12)}
+  :root[data-theme="light"] input:focus,:root[data-theme="light"] select:focus{border-color:var(--magenta);box-shadow:0 0 0 3px var(--magenta-soft)}
+  select{appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23999' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+  select option{background:var(--bg-2);color:var(--ink)}
+  input[type=number],input.money{font-family:var(--f-mono);font-variant-numeric:tabular-nums} input.money{text-align:right}
+  /* opciones (tarjetas elegibles) */
+  .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:12px}
+  .opt{border:1px solid var(--stroke);border-radius:var(--radius-s);padding:14px 16px;cursor:pointer;background:rgba(255,255,255,.04);min-width:0;transition:background .3s,border-color .3s,transform .35s var(--ease)}
+  :root[data-theme="light"] .opt{background:rgba(255,255,255,.6)}
+  .opt:hover{background:var(--glass-3);transform:translateY(-1px)} .opt.on{border-color:var(--magenta);background:var(--magenta-soft);box-shadow:0 0 0 1px var(--magenta) inset}
+  .opt b{display:block;font-size:14px;font-weight:var(--w-strong);letter-spacing:-.01em;margin-bottom:3px} .opt span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+  .opt .cu{margin-top:8px;padding-top:8px;border-top:1px dashed var(--stroke);font-size:12.5px;line-height:1.45;color:var(--ink-2)} .opt .cu b{color:var(--magenta-ink);font-weight:var(--w-strong);display:inline;font-size:12.5px}
+  .grupos{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:16px}
+  .grupo{text-align:left;border:1px solid var(--stroke);background:rgba(255,255,255,.04);color:var(--ink);border-radius:var(--radius-s);padding:12px 14px;cursor:pointer;min-width:0;transition:background .3s,border-color .3s}
+  :root[data-theme="light"] .grupo{background:rgba(255,255,255,.6)}
+  .grupo b{display:block;font-size:14px;font-weight:var(--w-strong)} .grupo span{display:block;font-size:12px;color:var(--ink-3);margin-top:3px;line-height:1.35}
+  .grupo:hover{background:var(--glass-3)} .grupo.on{border-color:var(--magenta);background:var(--magenta-soft)}
+  .nosure{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);padding:4px 0}
+  .bc{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);margin-bottom:12px;min-height:18px}
+  .bc span{background:rgba(255,255,255,.05);border:1px solid var(--stroke);padding:3px 10px;border-radius:999px} .bc i{color:var(--ink-3);font-style:normal}
+  .bc .lnk{background:none;border:0;color:var(--magenta-ink);cursor:pointer;font-size:12px;padding:3px 6px;text-decoration:underline}
+  .gq{font-weight:700;letter-spacing:-.02em;font-size:20px;margin:4px 0 6px;line-height:1.15} .gq b{color:var(--magenta-ink)}
+  .gfin{padding:14px 16px;border-radius:var(--radius-s)} .gfin p{font-size:14px;line-height:1.5;margin:8px 0;color:var(--ink)} .gfin p b{color:var(--magenta-ink)}
+  #guia .opts{margin-top:12px}
+  .sel{margin-top:16px;padding:12px 16px;border-radius:var(--radius-s);border:1px solid rgba(255,5,138,.45);background:var(--magenta-soft);font-size:14px} .sel .muted{color:var(--ink-2);font-size:12.5px}
+  /* botones */
+  .btns{display:flex;gap:10px;justify-content:space-between;margin-top:24px;flex-wrap:wrap;align-items:center}
+  button.p,button.s,button.ok,.noti button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 18px;border-radius:999px;font-size:14px;font-weight:600;letter-spacing:-.005em;white-space:nowrap;cursor:pointer;border:0;transition:transform .35s var(--ease),background .35s}
+  button.p{background:var(--magenta);color:var(--on-accent);box-shadow:0 10px 30px -10px rgba(255,5,138,.7)}
+  button.s,.noti button{background:var(--glass-2);color:var(--ink);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+  button.s:hover,.noti button:hover{background:var(--glass-3)} button.p:hover,button.s:hover,button.ok:hover{transform:translateY(-1px)}
+  button.ok,#btnAprob{background:var(--pill-bg);color:var(--pill-fg);border:0}
+  button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+  /* texto auxiliar */
+  .hint{font-size:12.5px;color:var(--ink-3);margin-top:5px;line-height:1.45}
+  .nota{background:var(--magenta-soft);border:1px solid rgba(255,5,138,.35);border-radius:var(--radius-s);padding:10px 14px;font-size:13px;margin-top:14px;color:var(--ink);line-height:1.45}
+  .err{background:var(--bad-bg);border:1px solid rgba(255,59,92,.4);border-radius:var(--radius-s);padding:10px 14px;font-size:13px;margin-top:10px;color:var(--ink)} .err::before{content:"⚠ ";color:var(--bad)}
+  details.help{margin-top:8px;font-size:13px;color:var(--ink-2);line-height:1.5}
+  details.help summary{cursor:pointer;color:var(--magenta-ink);font-size:12px;letter-spacing:.02em;list-style:none;display:inline-flex;align-items:center;gap:6px;font-weight:600}
+  details.help summary::before{content:"?";display:inline-grid;place-items:center;width:16px;height:16px;border:1px solid var(--magenta-ink);border-radius:50%;font-size:10px;font-weight:700}
+  details.help summary::-webkit-details-marker{display:none} details.help[open] summary{margin-bottom:6px}
+  details.help b{color:var(--ink);font-weight:var(--w-strong)} details.help i{color:var(--magenta-ink);font-style:normal}
+  body.sin details.help:not(.keep), body.sin .intro, body.sin .hint{display:none}
+  /* tabla de liquidación */
+  .tablebox{overflow-x:auto;margin-top:18px;min-width:0}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
+  th,td{padding:11px 10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;vertical-align:middle} :root[data-theme="light"] th,:root[data-theme="light"] td{border-bottom-color:rgba(13,15,18,.08)}
+  th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--stroke)}
+  tbody tr:hover td{background:rgba(255,255,255,.03)}
+  td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  td.motivo{font-size:12.5px;color:var(--ink-2);max-width:320px;line-height:1.4}
+  td .norma{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+  td input.t{width:72px;min-height:32px;padding:0 10px;font-size:13px;text-align:right;border-radius:999px} td .unit{font-size:12px;color:var(--ink-3);margin-left:3px} td.num:has(input.t){white-space:nowrap}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);padding:3px 9px;border-radius:999px;border:1px solid var(--stroke);background:rgba(255,255,255,.03);white-space:nowrap;margin-left:6px;vertical-align:middle}
+  .tag.ed{color:var(--warn);border-color:rgba(255,197,49,.35)}
+  tfoot td{border-bottom:0;border-top:1px solid var(--stroke);font-size:15px} .tot{font-weight:700;letter-spacing:-.01em} .neto{color:var(--magenta-ink);font-size:22px;font-weight:700;letter-spacing:-.03em}
+  /* totales y tarjetas móviles */
+  .totales{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .totales .tb{padding:14px 16px;border-radius:var(--radius-s);min-width:0;overflow:hidden}
+  .totales .tb b{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-bottom:4px}
+  .totales .tb span{font-family:var(--f-mono);font-size:clamp(18px,5.6vw,26px);font-weight:500;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap} .totales .tb.neto span{color:var(--magenta-ink)} .totales .tb.neto{border-color:rgba(255,5,138,.45)}
   .resumen-d{margin-bottom:12px} .resumen-d summary{margin-bottom:8px}
-  .cards{display:none;flex-direction:column;gap:10px} .noap{margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:4px} .noap summary{font-size:13px} .noap-list{display:flex!important;flex-direction:column;gap:8px} .noap .lc{opacity:.8} .noap .lc .lc-v{font-size:13px}
-  .lc{border:1px solid var(--line);border-radius:4px;padding:12px 14px;background:var(--surface2)} .lc.off{opacity:.75}
-  .lc .lc-h{display:flex;align-items:flex-start;gap:10px} .lc .lc-h label{display:flex;align-items:center;padding-top:2px} .lc .lc-h input{width:20px;height:20px;accent-color:var(--gold)}
-  .lc .lc-n{flex:1;min-width:0;font-size:14px;font-weight:var(--w-strong);line-height:1.3} .lc .lc-v{font-family:var(--display);font-size:22px;font-weight:600;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums} .lc.off .lc-v{color:var(--muted);font-size:16px;font-family:var(--body)}
-  .lc .lc-r{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;font-size:12.5px;color:var(--muted);flex-wrap:wrap} .lc .lc-r input.t{width:84px}
-  .lc .lc-m{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.4} .lc .norma{font-size:11.5px;color:var(--dim);margin-top:4px;display:block}
+  .cards{display:none;flex-direction:column;gap:10px}
+  .lc{border-radius:var(--radius-s);padding:12px 14px} .lc.off{opacity:.78}
+  .lc .lc-h{display:flex;align-items:flex-start;gap:10px} .lc .lc-h label{display:flex;align-items:center;padding-top:2px} .lc .lc-h input{width:20px;height:20px;accent-color:var(--magenta)}
+  .lc .lc-n{flex:1;min-width:0;font-size:14px;font-weight:var(--w-strong);line-height:1.3} .lc .lc-v{font-family:var(--f-mono);font-size:19px;font-weight:500;color:var(--magenta-ink);white-space:nowrap;font-variant-numeric:tabular-nums} .lc.off .lc-v{color:var(--ink-3);font-size:14px}
+  .lc .lc-r{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;font-size:12.5px;color:var(--ink-2);flex-wrap:wrap} .lc .lc-r input.t{width:84px}
+  .lc .lc-m{font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.4} .lc .norma{font-size:11.5px;color:var(--ink-3);margin-top:4px;display:block}
+  .noap{margin-top:16px;padding:12px 16px;border-radius:var(--radius-s)} .noap summary{font-size:13px} .noap-list{display:flex!important;flex-direction:column;gap:8px} .noap .lc .lc-v{font-size:13px}
+  .seg-box{margin-top:16px;padding:12px 16px;border-radius:var(--radius-s);font-size:13px;color:var(--ink-2)} .seg-box b{color:var(--ink)}
+  .fine{font-size:12px;color:var(--ink-3);margin-top:12px;line-height:1.5}
+  .sw{display:inline-flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px} .sw input{accent-color:var(--magenta);margin-top:3px}
+  /* CIIU */
+  .ciiu-res{max-height:280px;overflow:auto;border-radius:var(--radius-s);margin-top:8px;box-shadow:none}
+  .ciiu-res div{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;display:flex;justify-content:space-between;gap:12px;font-size:14px;min-width:0;transition:background .3s}
+  .ciiu-res div:last-child{border-bottom:0} .ciiu-res div:hover{background:var(--glass-3)} .ciiu-res div.on{background:var(--magenta-soft);box-shadow:inset 2px 0 0 var(--magenta)}
+  .ciiu-res .tar{font-family:var(--f-mono);font-weight:500;color:var(--magenta-ink);white-space:nowrap} .ciiu-res span:first-child{min-width:0}
+  .noti{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px} .noti button{font-size:12.5px;min-height:34px;padding:0 14px}
+  .aprob{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:16px;padding:16px 18px;border-radius:var(--radius-s)}
+  .aprob .big{font-family:var(--f-mono);font-size:36px;font-weight:500;letter-spacing:-.03em;color:var(--magenta-ink);line-height:1} .aprob .big small{font-family:var(--f-display);font-size:13px;color:var(--ink-3);margin-left:6px}
+  .aprob.ok{border-color:rgba(155,225,93,.45)} .aprob .estado{font-size:12px;color:var(--ink-3)} .aprob.ok .estado{color:var(--ok)} .aprob.ok .estado::before{content:"● ";}
+  .kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;font-size:14px;margin-bottom:6px} .kv b{color:var(--ink-3);font-family:var(--f-mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding-top:3px} .kv span{min-width:0;overflow-wrap:anywhere}
+  .toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:#0a0a0a;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:600;display:none;z-index:10;max-width:90vw;box-shadow:0 30px 60px -30px rgba(0,0,0,.65)}
+  footer{max-width:1040px;margin:22px auto 0;font-size:11.5px;color:var(--ink-3);line-height:1.6;padding:0 6px}
+  footer .credit{display:block;margin-top:10px;color:var(--magenta-ink);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em}
+  /* IVA, contrato, 383 */
+  .contrato-box{grid-column:1/-1} .grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px} @media (max-width:520px){.grid2{grid-template-columns:1fr 1fr}}
+  .iva-box{grid-column:1/-1}
+  .iva-row{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;align-items:end;padding:12px 14px;border-radius:var(--radius-s);margin-bottom:8px;box-shadow:none}
+  .iva-row input[data-k=pct]{text-align:right} .iva-row button.x{background:var(--glass-2);border:1px solid var(--stroke);color:var(--ink-2);border-radius:999px;width:44px;height:44px;cursor:pointer;font-size:18px}
+  .iva-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px} .iva-foot button{font-size:13px} .iva-tot{font-size:14px;color:var(--ink-2)} .iva-tot b{color:var(--ink);font-family:var(--f-mono);font-size:16px;margin-left:6px}
+  .r383{grid-column:1/-1;padding:16px 18px;border-radius:var(--radius-s)} .r383 .grid{gap:14px}
+  .r383-out{margin-top:14px;padding:12px 16px;border-radius:var(--radius-xs);box-shadow:none} .r383-out .kv{grid-template-columns:max-content 1fr} .r383-out .gold{color:var(--magenta-ink)}
+  .r383 .sw{font-size:13px;color:var(--ink)}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   @media (max-width:760px){
-    header{padding:16px 0 12px;align-items:flex-start;flex-direction:column;gap:10px}
-    header h1{font-size:24px} header .sub{font-size:11px;margin-top:4px}
-    .hdr-r{width:100%;flex-direction:row;align-items:center;justify-content:space-between} .hdr-ctl{width:100%} .seg.modo{width:auto;flex:1} .vig{display:none}
+    header{padding:14px 16px;align-items:flex-start;flex-direction:column;gap:10px}
+    header h1{font-size:22px}
+    .hdr-r{width:100%;flex-direction:row;align-items:center;justify-content:space-between} .hdr-ctl{width:100%} .seg.modo{flex:1} .vig{display:none}
     .steps div span{display:none} .steps div{padding-top:8px} .step-now{display:block}
-    .card{padding:18px 14px;border-radius:6px} .card h2{font-size:22px}
+    .card{padding:18px 16px;border-radius:18px} .card h2{font-size:21px}
     .grid{gap:16px}
-    .btns{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr;gap:10px}
-    .btns>span{display:none} .btns>div{display:grid!important;grid-template-columns:1fr;gap:10px;width:100%}
-    .btns button{width:100%;padding:14px 16px;font-size:15px} .btns>div{order:-1} .btns>div button.p{order:-1}
+    .btns{margin-top:22px;padding-top:16px;border-top:1px solid var(--stroke);display:grid;grid-template-columns:1fr;gap:10px}
+    .btns>span{display:none} .btns>div{display:grid!important;grid-template-columns:1fr;gap:10px;width:100%;order:-1} .btns>div button.p{order:-1}
+    .btns button{width:100%;min-height:46px;font-size:15px}
     .tablebox{display:none} .cards{display:flex}
-    .aprob{flex-direction:column;align-items:stretch;gap:12px} .aprob>div[style]{display:none} .aprob .big{font-size:34px} .aprob button.p{width:100%} .aprob input{width:100%!important}
+    .aprob{flex-direction:column;align-items:stretch;gap:12px} .aprob>div[style]{display:none} .aprob .big{font-size:32px} .aprob button{width:100%} .aprob input{width:100%!important}
     .grupos{grid-template-columns:1fr 1fr} .opts{grid-template-columns:1fr}
     .noti{flex-direction:column} .noti button{width:100%}
-    .fine{font-size:11.5px} footer{font-size:10.5px}
+    .iva-row{grid-template-columns:1fr 1fr} .iva-row>div:first-child{grid-column:1/-1} .iva-row button.x{width:100%}
     .ciiu-res{max-height:240px}
   }
-
 </style>
 
 </head><body><header>
@@ -196,7 +245,7 @@
       <div><label class="f" for="valor">Valor de la cuenta antes de IVA</label><input type="text" class="money" id="valor" inputmode="decimal" placeholder="0" autocomplete="off"><div class="hint">Valor bruto de la cuenta de cobro, factura o acta, sin IVA.</div><details class="help"><summary>¿Cómo lo verifico?</summary>En la factura electrónica es el <b>subtotal</b> antes de IVA. En una cuenta de cobro de PN no responsable es el valor total. Si hay AIU (obra), la base de IVA es solo la utilidad, pero estampillas e ICA van sobre el valor total sin IVA.</details></div>
       <div id="wTieneIva"><label class="f">¿La factura trae IVA?</label><div class="seg" id="segTieneIva"><button type="button" data-v="1">Sí, con IVA</button><button type="button" data-v="0">No, sin IVA</button></div><div class="hint">Mira la factura, no el RUT: un responsable de IVA puede vender bienes o servicios sin IVA.</div><details class="help"><summary>¿Cómo lo verifico?</summary>Si la factura trae una línea "IVA 19 %" con valor, es <b>Sí</b>. Si dice "excluido", "exento" o simplemente no trae IVA, es <b>No</b>. Casos frecuentes <b>sin IVA</b> en el municipio: <b>ganado en pie y animales vivos</b>, productos agrícolas sin procesar (plátano, café pergamino, frutas, verduras), huevos, leche cruda, semillas, abonos, medicamentos, transporte público de pasajeros, arrendamiento de vivienda, servicios de educación y salud, intereses de créditos (E.T. arts. 424, 476). Los contratos de obra pública tampoco causan IVA (solo la interventoría o consultoría sí). Si tienes AIU, el IVA va solo sobre la utilidad.</details></div>
       <div id="wIva" class="iva-box"><label class="f">IVA de la factura</label>
-        <div class="hint" style="margin:0 0 8px">Una fila por tarifa. Si toda la factura va al 19 %, deja la primera fila. Si hay productos al 5 % y al 19 %, agrega una fila por cada tarifa con su base.</div>
+        <div class="hint" style="margin:0 0 8px">Una fila por tarifa. Si toda la factura va al 19 %, deja la primera fila. Si hay productos a distintas tarifas, agrega una fila por cada una: escribe la tarifa en % y la base, o directamente el IVA que trae la factura.</div>
         <div id="ivaRows"></div>
         <div class="iva-foot"><button type="button" class="s" onclick="addIvaRow()">+ Agregar otra tarifa de IVA</button><div class="iva-tot">IVA total <b id="ivaTot">$0</b></div></div>
         <div class="hint" id="ivaHint"></div>
@@ -719,33 +768,35 @@ function autoIVA() {
   if (ST.tieneIva === null) { seg('segTieneIva', ''); $('wIva').hidden = true; setIva(0); return; }
   if (ST.tieneIva === 0) { $('wIva').hidden = true; setIva(0); return; }
   $('wIva').hidden = false;
-  if (!ST.ivaRows.length) ST.ivaRows = [{ base: null, pct: +P.config.IVA_TARIFA * 100 }];
+  if (!ST.ivaRows.length) ST.ivaRows = [{ base: null, pct: +P.config.IVA_TARIFA * 100, iva: null }];
   renderIvaRows();
 }
 function setIva(v) { $('iva').value = v; $('ivaTot').textContent = '$' + fmt(v); }
-function addIvaRow() { ST.ivaRows.push({ base: 0, pct: 5 }); renderIvaRows(); }
-function delIvaRow(i) { ST.ivaRows.splice(i, 1); if (!ST.ivaRows.length) ST.ivaRows = [{ base: null, pct: +P.config.IVA_TARIFA * 100 }]; renderIvaRows(); }
+function addIvaRow() { ST.ivaRows.push({ base: 0, pct: 5, iva: null }); renderIvaRows(); }
+function delIvaRow(i) { ST.ivaRows.splice(i, 1); if (!ST.ivaRows.length) ST.ivaRows = [{ base: null, pct: +P.config.IVA_TARIFA * 100, iva: null }]; renderIvaRows(); }
 function renderIvaRows() {
   var box = $('ivaRows'); box.innerHTML = ''; var valor = money($('valor').value), total = 0;
   ST.ivaRows.forEach(function (r, i) {
-    var base = (r.base === null) ? valor : r.base; var v = Math.round(base * r.pct / 100); total += v;
+    var base = (r.base === null) ? valor : r.base; var v = (r.iva !== undefined && r.iva !== null) ? r.iva : Math.round(base * r.pct / 100); total += v;
     var d = document.createElement('div'); d.className = 'iva-row';
     d.innerHTML = '<div><label class="f">Base gravada</label><input type="text" class="money" inputmode="decimal" value="' + (base ? fmtMoney(base) : '') + '" placeholder="0" aria-label="Base IVA fila ' + (i + 1) + '" data-i="' + i + '" data-k="base"></div>' +
-      '<div><label class="f">Tarifa</label><select data-i="' + i + '" data-k="pct" aria-label="Tarifa IVA fila ' + (i + 1) + '"><option value="19"' + (r.pct === 19 ? ' selected' : '') + '>19 %</option><option value="5"' + (r.pct === 5 ? ' selected' : '') + '>5 %</option><option value="0"' + (r.pct === 0 ? ' selected' : '') + '>0 % (exento)</option></select></div>' +
-      '<div><label class="f">IVA</label><div class="iva-val">$' + fmt(v) + '</div></div>' +
+      '<div><label class="f">Tarifa %</label><input type="number" step="any" min="0" max="100" list="ivaPcts" value="' + r.pct + '" aria-label="Tarifa IVA fila ' + (i + 1) + '" data-i="' + i + '" data-k="pct"></div>' +
+      '<div><label class="f">IVA</label><input type="text" class="money" inputmode="decimal" value="' + (v ? fmtMoney(v) : '') + '" placeholder="0" aria-label="IVA fila ' + (i + 1) + '" data-i="' + i + '" data-k="iva"></div>' +
       (ST.ivaRows.length > 1 ? '<button type="button" class="x" title="Quitar fila" onclick="delIvaRow(' + i + ')">×</button>' : '<span></span>');
     box.appendChild(d);
   });
-  box.querySelectorAll('input.money').forEach(function (inp) { attachMoney(inp); inp.addEventListener('input', function () { ST.ivaRows[+inp.dataset.i].base = money(inp.value); updateIvaTotals(); }); });
-  box.querySelectorAll('select').forEach(function (s) { s.onchange = function () { ST.ivaRows[+s.dataset.i].pct = +s.value; renderIvaRows(); }; });
-  setIva(total);
-  var sum = ST.ivaRows.reduce(function (a, r) { return a + ((r.base === null) ? valor : r.base); }, 0);
-  $('ivaHint').textContent = (ST.ivaRows.length > 1 && Math.abs(sum - valor) > 1) ? 'Ojo: las bases suman $' + fmt(sum) + ' y el valor antes de IVA es $' + fmt(valor) + '. La diferencia debe ser la parte excluida o exenta de la factura.' : 'Compara el IVA total con el de la factura; si no coincide por centavos, ajusta la base.';
+  if (!$('ivaPcts')) { var dl = document.createElement('datalist'); dl.id = 'ivaPcts'; dl.innerHTML = '<option value="19"><option value="5"><option value="0">'; document.body.appendChild(dl); }
+  box.querySelectorAll('input.money').forEach(function (inp) { attachMoney(inp); });
+  box.querySelectorAll('input[data-k="base"]').forEach(function (inp) { inp.addEventListener('input', function () { var r = ST.ivaRows[+inp.dataset.i]; r.base = money(inp.value); r.iva = null; var row = inp.closest('.iva-row'); row.querySelector('input[data-k="iva"]').value = fmtMoney(Math.round(r.base * r.pct / 100)); updateIvaTotals(); }); });
+  box.querySelectorAll('input[data-k="pct"]').forEach(function (inp) { inp.addEventListener('input', function () { var r = ST.ivaRows[+inp.dataset.i]; r.pct = parseFloat(inp.value) || 0; var row = inp.closest('.iva-row'); var base = (r.base === null) ? money($('valor').value) : r.base; r.iva = null; row.querySelector('input[data-k="iva"]').value = fmtMoney(Math.round(base * r.pct / 100)); updateIvaTotals(); }); });
+  box.querySelectorAll('input[data-k="iva"]').forEach(function (inp) { inp.addEventListener('input', function () { var r = ST.ivaRows[+inp.dataset.i]; r.iva = money(inp.value); var row = inp.closest('.iva-row'); if (r.pct > 0) { r.base = Math.round(r.iva * 100 / r.pct); row.querySelector('input[data-k="base"]').value = fmtMoney(r.base); } updateIvaTotals(); }); });
+  updateIvaTotals();
 }
 function updateIvaTotals() {
-  var valor = money($('valor').value), total = 0;
-  $('ivaRows').querySelectorAll('.iva-row').forEach(function (row, i) { var r = ST.ivaRows[i]; var base = (r.base === null) ? valor : r.base; var v = Math.round(base * r.pct / 100); total += v; row.querySelector('.iva-val').textContent = '$' + fmt(v); });
+  var valor = money($('valor').value), total = 0, sum = 0;
+  ST.ivaRows.forEach(function (r) { var base = (r.base === null) ? valor : r.base; var v = (r.iva !== undefined && r.iva !== null) ? r.iva : Math.round(base * r.pct / 100); total += v; sum += base; });
   setIva(total);
+  $('ivaHint').textContent = (ST.ivaRows.length > 1 && Math.abs(sum - valor) > 100) ? 'Ojo: las bases suman $' + fmt(sum) + ' y el valor antes de IVA es $' + fmt(valor) + '. La diferencia debe ser la parte excluida o exenta de la factura.' : 'Escribe la base o el IVA de la factura; la fila calcula el otro. Puedes digitar cualquier tarifa (19, 5, 0 u otra).';
 }
 // ---- honorario mensual = valor total / plazo
 function calcMensual() {
