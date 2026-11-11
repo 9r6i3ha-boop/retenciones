@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Liquidador Retenciones Mistrató</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: una sola columna centrada, pasos como barra de progreso fina; la liquidación es una tabla contable sobre negro con acento champaña. */
+  :root{
+    --bg:#0a0a0b; --surface:#141416; --surface2:#1c1c1f; --line:#2a2a2f; --line2:#3a3a41;
+    --fg:#f2f2ef; --muted:#b4b4ba; --dim:#8c8c94;
+    --gold:#d4b36a; --gold2:#b8975a; --gold-dim:rgba(212,179,106,.14); --gold-hover:#e3c47c; --on-gold:#111111;
+    --ok:#7fc8a0; --warn:#e2b86a; --warn-bg:rgba(226,184,106,.18); --bad:#e07c7c; --bad-bg:rgba(224,124,124,.12); --bad-fg:#f1c3c3;
+    --display:'Cormorant Garamond',Georgia,'Times New Roman',serif; --body:'Manrope',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --w-body:400; --w-strong:600; --w-label:600;
+    color-scheme:dark;
+  }
+  :root[data-theme="light"]{
+    --bg:#f3f6f3; --surface:#ffffff; --surface2:#eef3ee; --line:#d3dcd4; --line2:#b7c4b9;
+    --fg:#13201a; --muted:#3a4a40; --dim:#5f6f65;
+    --gold:#1e6b3f; --gold2:#2a8a52; --gold-dim:rgba(30,107,63,.10); --gold-hover:#2a8a52; --on-gold:#ffffff;
+    --ok:#1e6b3f; --warn:#8a5a00; --warn-bg:rgba(138,90,0,.12); --bad:#b3261e; --bad-bg:rgba(179,38,30,.08); --bad-fg:#8c1d16;
+    --w-body:500; --w-strong:700; --w-label:700;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box} html,body{height:100%} [hidden]{display:none!important}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;font-weight:var(--w-body);line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+  header{max-width:1040px;margin:0 auto;padding:30px 0 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+  header h1{font-family:var(--display);font-weight:500;font-size:34px;margin:0;letter-spacing:.01em;line-height:1.05;text-wrap:balance}
+  header h1 em{font-style:italic;color:var(--gold)}
+  header .sub{color:var(--muted);font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+  header .vig{font-size:12px;color:var(--dim);text-align:right;letter-spacing:.06em;text-transform:uppercase}
+  .wrap{max-width:1040px;margin:0 auto}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:26px 28px} :root[data-theme="light"] .card{box-shadow:0 1px 3px rgba(0,0,0,.06)} :root[data-theme="light"] input[type=text],:root[data-theme="light"] input[type=number],:root[data-theme="light"] select,:root[data-theme="light"] textarea{background:#fff;border-color:#9fb0a4}
+  .card h2{font-family:var(--display);font-weight:500;font-size:26px;margin:0 0 18px;line-height:1.1}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px 22px}
+  label.f{display:block;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:var(--w-label)}
+  input[type=text],input[type=number],select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line2);border-radius:3px;font-size:15px;background:var(--surface2);color:var(--fg);font-family:var(--body)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim)}
+  input[type=number]{font-variant-numeric:tabular-nums}
+  .seg{display:flex;gap:0;border:1px solid var(--line2);border-radius:3px;overflow:hidden}
+  .seg button{flex:1;min-width:0;padding:10px 8px;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;font-family:var(--body);border-right:1px solid var(--line2)}
+  .seg button:last-child{border-right:0} .seg button.on{background:var(--gold);color:var(--on-gold);font-weight:600}
+  .seg button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+  .grupos{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:16px}
+  .grupo{text-align:left;border:1px solid var(--line2);background:var(--surface2);color:var(--fg);border-radius:3px;padding:12px 14px;cursor:pointer;font-family:var(--body);min-width:0}
+  .grupo b{display:block;font-size:14px;font-weight:var(--w-strong)} .grupo span{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
+  .grupo:hover{border-color:var(--gold2)} .grupo.on{border-color:var(--gold);background:var(--gold-dim)}
+  .bc{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:12px;min-height:18px} .bc span{background:var(--surface2);border:1px solid var(--line);padding:3px 8px;border-radius:2px} .bc i{color:var(--dim);font-style:normal}
+  .bc .lnk{background:none;border:0;color:var(--gold);cursor:pointer;font-size:12px;font-family:var(--body);padding:3px 6px;text-decoration:underline}
+  .gq{font-family:var(--display);font-size:22px;margin:4px 0 6px;line-height:1.2} .gq b{color:var(--gold)}
+  .gfin p{font-size:14px;line-height:1.5;margin:8px 0;color:var(--fg)} .gfin p b{color:var(--gold)}
+  #guia .opts{margin-top:12px}
+  .opt .cu{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12.5px;line-height:1.45;color:var(--muted)} .opt .cu b{color:var(--gold);font-weight:var(--w-strong);display:inline}
+  .nosure{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted);padding:8px 0} .nosure button{font-size:12.5px;padding:8px 12px}
+  .sel{margin-top:16px;padding:12px 14px;border-left:2px solid var(--gold);background:var(--gold-dim);font-size:14px} .sel .muted{color:var(--muted);font-size:12.5px}
+  .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:16px}
+  .opt{border:1px solid var(--line);border-radius:3px;padding:12px 14px;cursor:pointer;background:var(--surface2);min-width:0}
+  .opt:hover{border-color:var(--gold2)} .opt.on{border-color:var(--gold);background:var(--gold-dim)}
+  .opt b{display:block;font-size:14px;font-weight:var(--w-strong);margin-bottom:3px} .opt span{font-size:12.5px;color:var(--muted);line-height:1.4}
+  .btns{display:flex;gap:10px;justify-content:space-between;margin-top:24px;flex-wrap:wrap;align-items:center}
+  button.p{background:var(--gold);color:var(--on-gold);border:0;padding:12px 22px;border-radius:3px;font-size:14px;cursor:pointer;font-weight:700;letter-spacing:.04em;font-family:var(--body)}
+  button.p:hover{background:var(--gold-hover)} button.s{background:transparent;color:var(--fg);border:1px solid var(--line2);padding:12px 18px;border-radius:3px;font-size:14px;cursor:pointer;font-family:var(--body)}
+  button.s:hover{border-color:var(--gold2)} button:disabled{opacity:.4;cursor:not-allowed} button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .hint{font-size:12.5px;color:var(--dim);margin-top:5px;line-height:1.45;font-weight:var(--w-body)}
+  .nota{background:var(--gold-dim);border-left:2px solid var(--gold);padding:10px 14px;font-size:13px;margin-top:14px;color:var(--fg);line-height:1.45}
+  .err{background:var(--bad-bg);border-left:2px solid var(--bad);padding:10px 14px;font-size:13px;margin-top:10px;color:var(--bad-fg)}
+  .tablebox{overflow-x:auto;margin-top:18px;min-width:0}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+  th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+  th{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:var(--w-label);border-bottom:1px solid var(--line2)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr.off td{color:var(--dim)} td.motivo{font-size:12.5px;color:var(--muted);max-width:320px;line-height:1.4} tr.off td.motivo{color:var(--dim)}
+  td .norma{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
+  td input.t{width:92px;padding:5px 8px;font-size:13px;text-align:right}
+  td .unit{font-size:12px;color:var(--muted);margin-left:3px} td.num:has(input.t){white-space:nowrap} td input.t{width:72px}
+  .tag{display:inline-block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;background:var(--line);color:var(--muted);margin-left:6px;vertical-align:middle}
+  .tag.ed{background:var(--warn-bg);color:var(--warn)}
+  tfoot td{border-bottom:0;border-top:1px solid var(--line2);font-size:15px} .tot{font-weight:700} .neto{color:var(--gold);font-family:var(--display);font-size:24px;font-weight:600}
+  .ciiu-res{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:3px;margin-top:8px;background:var(--surface2)}
+  .ciiu-res div{padding:9px 12px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;gap:12px;font-size:14px;min-width:0}
+  .ciiu-res div:last-child{border-bottom:0} .ciiu-res div:hover{background:var(--gold-dim)} .ciiu-res div.on{background:var(--gold-dim);box-shadow:inset 2px 0 0 var(--gold)}
+  .ciiu-res .tar{font-weight:700;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums} .ciiu-res span:first-child{min-width:0}
+  .noti{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px} .noti button{font-size:12.5px;padding:8px 12px}
+  .contrato-box{grid-column:1/-1} .grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px} @media (max-width:520px){.grid2{grid-template-columns:1fr 1fr}}
+  .iva-box{grid-column:1/-1} .r383{grid-column:1/-1;border:1px solid var(--line);border-radius:3px;padding:14px 16px;background:var(--surface2)} .r383 .grid{gap:14px} .r383-out{margin-top:14px;padding:12px 14px;border:1px dashed var(--line2);border-radius:3px;background:var(--surface)} .r383-out .kv{grid-template-columns:max-content 1fr} .r383-out .gold{color:var(--gold)} .r383 .sw{font-size:13px;color:var(--fg);gap:10px;align-items:flex-start} .r383 .sw input{accent-color:var(--gold);margin-top:3px}
+  .iva-row{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;align-items:end;padding:10px 12px;border:1px solid var(--line);border-radius:3px;background:var(--surface2);margin-bottom:8px}
+  .iva-row .iva-val{padding:11px 0;font-variant-numeric:tabular-nums;font-weight:600;color:var(--gold)} .iva-row button.x{background:transparent;border:1px solid var(--line2);color:var(--muted);border-radius:3px;width:38px;height:42px;cursor:pointer;font-size:18px}
+  .iva-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px} .iva-foot button{font-size:13px;padding:9px 12px} .iva-tot{font-size:14px;color:var(--muted)} .iva-tot b{color:var(--fg);font-size:16px;font-variant-numeric:tabular-nums;margin-left:6px}
+  input.money{text-align:right;font-variant-numeric:tabular-nums}
+  @media (max-width:760px){ .iva-row{grid-template-columns:1fr 1fr;} .iva-row>div:first-child{grid-column:1/-1} .iva-row button.x{width:100%} }
+  .aprob{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:16px;padding:16px 18px;border-radius:3px;background:var(--surface2);border:1px dashed var(--line2)}
+  .aprob .big{font-family:var(--display);font-size:40px;font-weight:600;color:var(--gold);line-height:1} .aprob .big small{font-family:var(--body);font-size:13px;color:var(--muted);margin-left:4px}
+  .aprob.ok{border:1px solid var(--ok)} .aprob .estado{font-size:12px;color:var(--muted)} .aprob.ok .estado{color:var(--ok)}
+  .kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;font-size:14px;margin-bottom:6px} .kv b{color:var(--muted);font-weight:var(--w-label);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-top:2px} .kv span{min-width:0;overflow-wrap:anywhere}
+  .seg-box{margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:3px;font-size:13px;color:var(--muted)} .seg-box b{color:var(--fg)}
+  .toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--gold);color:var(--on-gold);padding:10px 18px;border-radius:3px;font-size:13px;font-weight:600;display:none;z-index:10;max-width:90vw}
+  .sw input{accent-color:var(--gold)}
+  .hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:10px} .hdr-ctl{display:flex;gap:8px;align-items:center}
+  .seg.tema{width:84px;flex:none} .seg.tema button{font-size:15px;padding:7px 0;line-height:1}
+  .seg.modo{width:280px;max-width:100%} .seg.modo button{font-size:12px;padding:8px 6px;letter-spacing:.04em}
+  body.sin details.help:not(.keep), body.sin .intro, body.sin .hint{display:none}
+  @media (max-width:520px){ .hdr-r{align-items:flex-start;width:100%} .vig{text-align:left} }
+  .intro{color:var(--muted);font-size:14px;margin:-6px 0 18px;max-width:64ch;line-height:1.5}
+  details.help{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.5;font-weight:var(--w-body)}
+  details.help summary{cursor:pointer;color:var(--gold);font-size:12px;letter-spacing:.04em;list-style:none;display:inline-flex;align-items:center;gap:6px}
+  details.help summary::before{content:"?";display:inline-grid;place-items:center;width:16px;height:16px;border:1px solid var(--gold);border-radius:50%;font-size:10px;font-weight:700}
+  details.help summary::-webkit-details-marker{display:none} details.help[open] summary{margin-bottom:6px}
+  details.help b{color:var(--fg);font-weight:var(--w-strong)} details.help i{color:var(--gold);font-style:normal}
+  .fine{font-size:12px;color:var(--dim);margin-top:12px;line-height:1.5}
+  footer .credit{display:block;margin-top:10px;color:var(--gold2);font-size:11.5px;letter-spacing:.06em}
+  footer{max-width:1040px;margin:26px auto 0;font-size:11.5px;color:var(--dim);letter-spacing:.04em;line-height:1.6}
+  @media (prefers-reduced-motion:no-preference){ .card{animation:fade .25s ease} @keyframes fade{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}} }
+
+  /* ---- pasos ---- */
+  .steps{display:flex;gap:4px;margin:18px 0 6px}
+  .steps div{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--dim);padding-top:10px;border-top:2px solid var(--line);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .steps div i{font-style:normal;width:26px;height:26px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:12px;font-weight:700}
+  .steps div span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .steps div.on{color:var(--gold);border-top-color:var(--gold)} .steps div.on i{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+  .steps div.done{color:var(--muted);border-top-color:var(--gold2)} .steps div.done i{border-color:var(--gold2);color:var(--gold)}
+  .step-now{display:none;font-family:var(--display);font-size:20px;color:var(--gold);margin:4px 0 12px;text-align:center}
+  /* ---- totales y tarjetas de liquidación ---- */
+  .totales{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px} .totales .tb{overflow:hidden}
+  .totales .tb{background:var(--surface2);border:1px solid var(--line2);border-radius:4px;padding:12px 14px;min-width:0}
+  .totales .tb b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
+  .totales .tb span{font-family:var(--display);font-size:clamp(18px,6.2vw,26px);white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums;color:var(--fg);overflow-wrap:anywhere} .totales .tb.neto span{color:var(--gold)} .totales .tb.neto{border-color:var(--gold2)}
+  .resumen-d{margin-bottom:12px} .resumen-d summary{margin-bottom:8px}
+  .cards{display:none;flex-direction:column;gap:10px} .noap{margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:4px} .noap summary{font-size:13px} .noap-list{display:flex!important;flex-direction:column;gap:8px} .noap .lc{opacity:.8} .noap .lc .lc-v{font-size:13px}
+  .lc{border:1px solid var(--line);border-radius:4px;padding:12px 14px;background:var(--surface2)} .lc.off{opacity:.75}
+  .lc .lc-h{display:flex;align-items:flex-start;gap:10px} .lc .lc-h label{display:flex;align-items:center;padding-top:2px} .lc .lc-h input{width:20px;height:20px;accent-color:var(--gold)}
+  .lc .lc-n{flex:1;min-width:0;font-size:14px;font-weight:var(--w-strong);line-height:1.3} .lc .lc-v{font-family:var(--display);font-size:22px;font-weight:600;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums} .lc.off .lc-v{color:var(--muted);font-size:16px;font-family:var(--body)}
+  .lc .lc-r{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;font-size:12.5px;color:var(--muted);flex-wrap:wrap} .lc .lc-r input.t{width:84px}
+  .lc .lc-m{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.4} .lc .norma{font-size:11.5px;color:var(--dim);margin-top:4px;display:block}
+  @media (max-width:760px){
+    header{padding:16px 0 12px;align-items:flex-start;flex-direction:column;gap:10px}
+    header h1{font-size:24px} header .sub{font-size:11px;margin-top:4px}
+    .hdr-r{width:100%;flex-direction:row;align-items:center;justify-content:space-between} .hdr-ctl{width:100%} .seg.modo{width:auto;flex:1} .vig{display:none}
+    .steps div span{display:none} .steps div{padding-top:8px} .step-now{display:block}
+    .card{padding:18px 14px;border-radius:6px} .card h2{font-size:22px}
+    .grid{gap:16px}
+    .btns{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr;gap:10px}
+    .btns>span{display:none} .btns>div{display:grid!important;grid-template-columns:1fr;gap:10px;width:100%}
+    .btns button{width:100%;padding:14px 16px;font-size:15px} .btns>div{order:-1} .btns>div button.p{order:-1}
+    .tablebox{display:none} .cards{display:flex}
+    .aprob{flex-direction:column;align-items:stretch;gap:12px} .aprob>div[style]{display:none} .aprob .big{font-size:34px} .aprob button.p{width:100%} .aprob input{width:100%!important}
+    .grupos{grid-template-columns:1fr 1fr} .opts{grid-template-columns:1fr}
+    .noti{flex-direction:column} .noti button{width:100%}
+    .fine{font-size:11.5px} footer{font-size:10.5px}
+    .ciiu-res{max-height:240px}
+  }
+
+</style>
+
+</head><body><header>
+  <div><h1>Liquidador de <em>retenciones</em> y estampillas</h1><div class="sub">Municipio de Mistrató · Secretaría de Hacienda</div></div>
+  <div class="hdr-r">
+    <div class="hdr-ctl"><div class="seg modo" id="segModo" role="group" aria-label="Modo de ayuda"><button type="button" data-v="con">Para pendejos</button><button type="button" data-v="sin">Con experiencia</button></div>
+    <div class="seg tema" id="segTema" role="group" aria-label="Tema"><button type="button" data-v="dark" title="Fondo negro">●</button><button type="button" data-v="light" title="Fondo claro">○</button></div></div>
+    <div class="vig">Vigencia <span id="hdrVig"></span> · Acuerdo 023 de 2025 · E.T.</div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="steps" id="steps"><div data-s="0"><i>1</i><span>Contratista</span></div><div data-s="1"><i>2</i><span>Contrato</span></div><div data-s="2"><i>3</i><span>Valores</span></div><div data-s="3"><i>4</i><span>Rete ICA</span></div><div data-s="4"><i>5</i><span>Liquidación</span></div></div>
+  <div class="step-now" id="stepNow"></div>
+
+  <section class="card" id="s0">
+    <h2>Datos del contratista, según su RUT</h2>
+    <p class="intro">Pídele al contratista el RUT actualizado. Cada pregunta trae una guía de dónde mirar; si tienes duda, abre <b>¿Cómo lo verifico?</b></p>
+    <div class="grid">
+      <div><label class="f">Tipo de persona</label><div class="seg" id="segPersona"><button type="button" data-v="PN">Persona natural</button><button type="button" data-v="PJ">Persona jurídica</button></div><details class="help"><summary>¿Cómo lo verifico?</summary>RUT, hoja 1, casilla <b>24 "Tipo de contribuyente"</b>: <b>1 = Persona jurídica</b>, <b>2 = Persona natural</b>. También sirve el NIT: si empieza por 8 o 9 casi siempre es jurídica; si es una cédula es natural.</details></div>
+      <div><label class="f" for="regimen">Régimen según RUT</label><select id="regimen"></select><div class="hint" id="regNota"></div><details class="help"><summary>¿Cómo lo verifico?</summary>RUT, hoja 1, casilla <b>53 "Responsabilidades"</b>. Busca estos códigos:<br>• <b>05</b> Impuesto de renta régimen ordinario → <i>Ordinario</i><br>• <b>04</b> Régimen tributario especial → <i>RTE</i> (fundaciones, corporaciones, ESAL calificadas)<br>• <b>47</b> Régimen simple de tributación → <i>SIMPLE</i> (manda sobre los demás)<br>• <b>15</b> Autorretenedor → <i>Autorretenedor</i> (solo PJ; debe tener resolución DIAN)<br>• Alcaldías, gobernaciones, hospitales públicos, ESP oficiales, universidades públicas → <i>Entidad pública</i>, sin importar los códigos.</details></div>
+    </div>
+    <div class="grid" style="margin-top:18px">
+      <div><label class="f">¿Responsable de IVA? (RUT 48)</label><div class="seg" id="segIVA"><button type="button" data-v="1">Sí</button><button type="button" data-v="0">No</button></div><details class="help"><summary>¿Cómo lo verifico?</summary>RUT, casilla <b>53</b>: código <b>48 "Impuesto sobre las ventas - IVA"</b> → responsable (factura con IVA y se le hace Rete IVA). Código <b>49 "No responsable de IVA"</b> → no responsable. Si la factura no trae IVA discriminado, trátalo como no responsable aunque tenga el 48 y pide corrección.</details></div>
+      <div id="wDecl"><label class="f">¿Declarante de renta?</label><div class="seg" id="segDecl"><button type="button" data-v="1">Declarante</button><button type="button" data-v="0">No declarante</button></div><div class="hint">Cambia la tarifa de retefuente en servicios y compras.</div><details class="help"><summary>¿Cómo lo verifico?</summary>RUT, casilla <b>53</b>: si aparece el código <b>05</b> (renta régimen ordinario) es <b>declarante</b>. Si solo trae códigos como 07 (retención en la fuente) o 49, y no el 05, es <b>no declarante</b>. En duda, pide certificación firmada del contratista; la tarifa más alta (no declarante) es la que protege al municipio.</details></div>
+      <div><label class="f">¿Exento o autorretenedor de ICA en Mistrató?</label><div class="seg" id="segExICA"><button type="button" data-v="1">Sí, acredita</button><button type="button" data-v="0">No</button></div><details class="help"><summary>¿Cómo lo verifico?</summary>Por defecto es <b>No</b>. Solo marca <b>Sí</b> si el contratista entrega uno de estos documentos (art. 87 del Acuerdo 023/2025):<br>• Resolución de la <b>Secretaría de Hacienda de Mistrató</b> que le reconoce exención del ICA.<br>• Resolución de Mistrató que lo nombra <b>autorretenedor de ICA</b> (no sirve la de autorretenedor DIAN, esa es de renta).<br>• Resolución de Mistrató que lo clasifica en <b>régimen simplificado de ICA</b>.<br>• Es un banco, aseguradora o cooperativa financiera <b>vigilada por la Superfinanciera</b>.<br>Si no entrega nada de esto, es <b>No</b>. Si está en SIMPLE (código 47) no te preocupes: el régimen ya lo excluye.</details></div>
+    </div>
+    <div class="btns"><span></span><button type="button" class="p" onclick="go(1)">Siguiente →</button></div>
+  </section>
+
+  <section class="card" id="s1" hidden>
+    <h2>¿Qué tipo de contrato o convenio es?</h2>
+    <p class="intro">Responde las preguntas y la app identifica el tipo. Si ya lo sabes, usa <b>Buscar</b> y escribe el objeto del contrato.</p>
+    <div class="seg" id="segP1" style="max-width:360px;margin-bottom:16px"><button type="button" data-v="guia">Guíame con preguntas</button><button type="button" data-v="buscar">Buscar</button></div>
+    <div id="guia"></div>
+    <input type="text" id="qTipo" placeholder="Ej.: refrigerios, placa huella, abogado, volqueta, papelería, junta de acción comunal…" autocomplete="off">
+    <div class="grupos" id="grupos"></div>
+    <div class="opts" id="opts"></div>
+    <div class="sel" id="selTipo" hidden></div>
+    <div class="btns"><button type="button" class="s" onclick="go(0)">← Atrás</button><button type="button" class="p" onclick="go(2)">Siguiente →</button></div>
+  </section>
+
+  <section class="card" id="s2" hidden>
+    <h2>Valores del pago</h2>
+    <div class="grid">
+      <div><label class="f" for="valor">Valor de la cuenta antes de IVA</label><input type="text" class="money" id="valor" inputmode="decimal" placeholder="0" autocomplete="off"><div class="hint">Valor bruto de la cuenta de cobro, factura o acta, sin IVA.</div><details class="help"><summary>¿Cómo lo verifico?</summary>En la factura electrónica es el <b>subtotal</b> antes de IVA. En una cuenta de cobro de PN no responsable es el valor total. Si hay AIU (obra), la base de IVA es solo la utilidad, pero estampillas e ICA van sobre el valor total sin IVA.</details></div>
+      <div id="wTieneIva"><label class="f">¿La factura trae IVA?</label><div class="seg" id="segTieneIva"><button type="button" data-v="1">Sí, con IVA</button><button type="button" data-v="0">No, sin IVA</button></div><div class="hint">Mira la factura, no el RUT: un responsable de IVA puede vender bienes o servicios sin IVA.</div><details class="help"><summary>¿Cómo lo verifico?</summary>Si la factura trae una línea "IVA 19 %" con valor, es <b>Sí</b>. Si dice "excluido", "exento" o simplemente no trae IVA, es <b>No</b>. Casos frecuentes <b>sin IVA</b> en el municipio: <b>ganado en pie y animales vivos</b>, productos agrícolas sin procesar (plátano, café pergamino, frutas, verduras), huevos, leche cruda, semillas, abonos, medicamentos, transporte público de pasajeros, arrendamiento de vivienda, servicios de educación y salud, intereses de créditos (E.T. arts. 424, 476). Los contratos de obra pública tampoco causan IVA (solo la interventoría o consultoría sí). Si tienes AIU, el IVA va solo sobre la utilidad.</details></div>
+      <div id="wIva" class="iva-box"><label class="f">IVA de la factura</label>
+        <div class="hint" style="margin:0 0 8px">Una fila por tarifa. Si toda la factura va al 19 %, deja la primera fila. Si hay productos al 5 % y al 19 %, agrega una fila por cada tarifa con su base.</div>
+        <div id="ivaRows"></div>
+        <div class="iva-foot"><button type="button" class="s" onclick="addIvaRow()">+ Agregar otra tarifa de IVA</button><div class="iva-tot">IVA total <b id="ivaTot">$0</b></div></div>
+        <div class="hint" id="ivaHint"></div>
+        <input type="hidden" id="iva" value="0">
+      </div>
+    </div>
+    <div class="grid" style="margin-top:18px">
+      <div><label class="f">¿Este pago es un anticipo?</label><div class="seg" id="segAnt"><button type="button" data-v="1">Sí, anticipo</button><button type="button" data-v="0">No</button></div></div>
+      <div id="wAmort"><label class="f" for="amort">Amortización de anticipo en esta cuenta</label><input type="text" class="money" id="amort" inputmode="decimal" placeholder="0" autocomplete="off"><div class="hint">Se descuenta del giro; las retenciones van sobre el valor bruto.</div><details class="help"><summary>¿Cómo lo verifico?</summary>El acta parcial o el informe de supervisión trae la línea "amortización de anticipo". Si el contrato no tuvo anticipo, déjalo en 0.</details></div>
+      <div id="wMensual" hidden class="contrato-box"><label class="f">Contrato: valor total y plazo</label>
+        <div class="grid2"><div><label class="f" for="ctotal">Valor total del contrato</label><input type="text" class="money" id="ctotal" inputmode="decimal" placeholder="0"></div><div><label class="f" for="cmeses">Plazo en meses</label><input type="number" id="cmeses" min="0.5" step="0.5" placeholder="1"></div></div>
+        <div class="hint" id="mensualHint">Honorario mensual: —</div>
+        <input type="hidden" id="mensual" value="0">
+        <div class="hint">Sirve para el tope de 10 SMLMV de Justicia Familiar (art. 173) y para verificar la planilla de seguridad social.</div><details class="help"><summary>¿Cómo lo verifico?</summary>En la minuta: cláusula de valor y cláusula de plazo. Si hubo adiciones o prórrogas, usa el valor y el plazo totales. El honorario mensual = valor total ÷ meses.</details>
+      </div>
+      <div id="wRf383" class="r383" hidden>
+        <label class="f">Retefuente por tabla art. 383 (rentas de trabajo)</label>
+        <div class="hint" style="margin:0 0 10px">Digita los aportes de la planilla del mes. La app depura la base y aplica la tabla del art. 383 con la UVT vigente.</div>
+        <div class="grid">
+          <div><label class="f" for="ap_salud">Aporte a salud (planilla)</label><input type="text" class="money" id="ap_salud" inputmode="decimal" placeholder="0"><div class="hint" id="apHint"></div></div>
+          <div><label class="f" for="ap_pension">Aporte a pensión (planilla)</label><input type="text" class="money" id="ap_pension" inputmode="decimal" placeholder="0"></div>
+          <div><label class="f" for="ap_arl">Aporte a ARL (si lo pagó)</label><input type="text" class="money" id="ap_arl" inputmode="decimal" placeholder="0"></div>
+          <div><label class="f" for="ded_otras">Otras deducciones del mes</label><input type="text" class="money" id="ded_otras" inputmode="decimal" placeholder="0"><div class="hint">Dependientes (10 %, máx. 32 UVT), medicina prepagada (máx. 16 UVT), intereses de vivienda. Solo con soporte.</div></div>
+        </div>
+        <div class="err" id="apAviso" hidden></div>
+        <label class="sw" style="margin-top:12px"><input type="checkbox" id="ex25" checked> <span>Aplicar renta exenta del 25 % (manifestó por escrito que no tomará costos ni deducciones · Dec. 2231/2023 art. 9)</span></label>
+        <details class="help"><summary>¿Cómo lo verifico?</summary>Requisitos para usar la tabla y no el 10 %: (1) persona natural que presta el servicio ella misma; (2) manifestación escrita de que <b>no tiene contratados 2 o más trabajadores</b> (art. 383 par. 2); (3) manifestación bajo juramento de que <b>no tomará costos ni deducciones</b> y se acoge al 25 % exento (Dec. 2231/2023 art. 9), normalmente en la misma cuenta de cobro; (4) planilla PILA del mes. Si falta la (2) o la (3), vuelve al paso 2 y elige servicios profesionales o no profesionales (tarifa fija). Los aportes sugeridos se calculan sobre el 40 % del pago (salud 12,5 %, pensión 16 %); reemplázalos por los de la planilla.</details>
+        <div class="r383-out" id="r383out"></div>
+        <label class="sw" style="margin-top:10px"><input type="checkbox" id="rf383manual"> <span>Usar otro valor de retención (digitado)</span></label>
+        <input type="text" class="money" id="rf383" inputmode="decimal" placeholder="0" autocomplete="off" hidden style="margin-top:8px;max-width:260px">
+      </div>
+      <div id="wTerr" hidden><label class="f">¿La actividad se ejecuta en Mistrató?</label><div class="seg" id="segTerr"><button type="button" data-v="1">Sí</button><button type="button" data-v="0">No</button></div><div class="hint">Art. 75, territorialidad del ICA.</div><details class="help"><summary>¿Cómo lo verifico?</summary>Servicios y obras: donde se ejecutan físicamente (en el municipio → <b>Sí</b>). Compras: si el proveedor despacha desde otro municipio y no tiene sede ni vendedor aquí, el ICA es de allá → <b>No</b>. En duda, <b>Sí</b>.</details></div>
+    </div>
+    <div class="btns"><button type="button" class="s" onclick="go(1)">← Atrás</button><button type="button" class="p" onclick="go(3)">Siguiente →</button></div>
+  </section>
+
+  <section class="card" id="s3" hidden>
+    <h2>Retención de Industria y Comercio</h2>
+    <div id="icaNo" class="nota" hidden></div>
+    <div id="icaCiiu">
+      <label class="f" for="qCiiu">Actividad (código CIIU o palabras del RUT)</label>
+      <input type="text" id="qCiiu" placeholder="4111, construcción, transporte de carga, papelería…" autocomplete="off">
+      <div class="ciiu-res" id="resCiiu"></div>
+      <div class="hint">Tarifas del art. 57 del Acuerdo 023 de 2025. Si el contratista tiene varias actividades, usa la del objeto del contrato.</div>
+    </div>
+    <div class="aprob" id="aprob" hidden>
+      <div><div class="hint" id="aprobTxt" style="margin:0 0 6px">Tarifa sugerida</div><div class="big"><span id="aprobTar">–</span><small>x 1.000</small></div></div>
+      <div style="flex:1"></div>
+      <div><label class="f" for="icaTar">Tarifa a aplicar (x mil)</label><input type="number" id="icaTar" step="0.5" min="0" style="width:130px"></div>
+      <button type="button" class="p" id="btnAprob" onclick="aprobarICA()">Aprobar tarifa</button>
+      <div class="estado" id="aprobEstado"></div>
+    </div>
+    <div class="btns"><button type="button" class="s" onclick="go(2)">← Atrás</button><button type="button" class="p" id="btnCalc" onclick="go(4)">Liquidar →</button></div>
+  </section>
+
+  <section class="card" id="s4" hidden>
+    <h2>Liquidación</h2>
+    <div class="totales" id="totales"></div>
+    <details class="help keep resumen-d" open><summary>Datos del pago</summary><div class="kv" id="resumen"></div></details>
+    <div id="avisos"></div>
+    <div class="cards" id="cards"></div>
+    <div class="tablebox"><table><thead><tr><th>Aplica</th><th>Concepto</th><th class="num">Base</th><th class="num">Tarifa</th><th class="num">Valor</th><th>Observación</th></tr></thead><tbody id="tbody"></tbody>
+      <tfoot><tr><td></td><td class="tot">Total retenciones</td><td></td><td></td><td class="num tot" id="tTotal"></td><td></td></tr>
+             <tr><td></td><td class="tot">Neto a girar</td><td></td><td></td><td class="num neto" id="tNeto"></td><td class="motivo">valor + IVA − amortización − retenciones</td></tr></tfoot></table></div>
+    <details class="help keep noap" id="noap"><summary id="noapSum">Conceptos que no aplican</summary><div class="hint" style="margin:0 0 10px">Estos conceptos no se retienen en este pago. Marca uno solo si tienes una razón documentada; quedará marcado como manual.</div><div class="cards noap-list" id="noapList"></div></details>
+    <div id="segBox" class="seg-box" hidden></div>
+    <div class="fine">Puedes desmarcar un concepto o editar su tarifa (en %; el Rete ICA en x mil). Las ediciones quedan marcadas como manuales en el resumen. Nada se guarda: al cerrar la página, la liquidación desaparece.</div>
+    <div class="btns"><button type="button" class="s" onclick="go(3)">← Atrás</button><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="s" onclick="copiar()">Copiar resumen</button><button type="button" class="p" onclick="nueva()">Nueva liquidación</button></div></div>
+  </section>
+</div>
+<footer>Parámetros: tablas de Hacienda 2026 y Acuerdo 023 de 2025 (arts. 57, 76-88, 167-173, 180-202). UVT <span id="ftUvt"></span> · SMLMV <span id="ftSmlmv"></span>. Bases mínimas de retefuente según Decreto 572 de 2025. Herramienta de apoyo: la liquidación definitiva la revisa Hacienda.<br><span class="credit">Creado por Harold Rivera para uso exclusivo de la Secretaría de Hacienda del Municipio de Mistrató, hasta que él lo permita.</span></footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+var P = {"config": {"ENTIDAD": "Municipio de Mistrató - Secretaría de Hacienda", "NIT_ENTIDAD": "891.480.030-2", "VIGENCIA": 2026, "UVT": 52374, "SMLMV": 1750905, "IVA_TARIFA": 0.19, "RETEIVA_TARIFA": 0.15, "FAMILIAR_TOPE_SMLMV": 10, "ANTICIPO_APLICAN": "FAMILIAR", "ICA_REDONDEO": 1, "REQUIERE_APROBACION_ICA": "SI"}, "regimenes": {"ORD_PN": {"CODIGO": "ORD_PN", "NOMBRE": "Persona natural - Régimen ordinario (RUT 05)", "TIPO_PERSONA": "PN", "APLICA_RF": "SI", "APLICA_RETEIVA": "SI", "APLICA_RETEICA": "SI", "NOTA": "Retefuente según tipo de contrato y si es declarante. Rete IVA solo si es responsable de IVA (RUT 48)."}, "ORD_PJ": {"CODIGO": "ORD_PJ", "NOMBRE": "Persona jurídica - Régimen ordinario (RUT 05)", "TIPO_PERSONA": "PJ", "APLICA_RF": "SI", "APLICA_RETEIVA": "SI", "APLICA_RETEICA": "SI", "NOTA": "Retefuente tarifa PJ. Debe expedir factura electrónica."}, "AUTORRET": {"CODIGO": "AUTORRET", "NOMBRE": "Persona jurídica - Autorretenedor de renta (RUT 15)", "TIPO_PERSONA": "PJ", "APLICA_RF": "NO", "APLICA_RETEIVA": "SI", "APLICA_RETEICA": "SI", "NOTA": "NO practicar retefuente (se autorretiene). Sí Rete IVA. Verificar resolución DIAN de autorretenedor."}, "RTE": {"CODIGO": "RTE", "NOMBRE": "Régimen Tributario Especial - RTE (RUT 04)", "TIPO_PERSONA": "PJ", "APLICA_RF": "NO", "APLICA_RETEIVA": "SI", "APLICA_RETEICA": "SI", "NOTA": "NO retefuente a título de renta (E.T. art. 19 / Dec. 1625 art. 1.2.1.5.1.x). Sí Rete IVA si factura con IVA."}, "SIMPLE": {"CODIGO": "SIMPLE", "NOMBRE": "Régimen SIMPLE de Tributación (RUT 47)", "TIPO_PERSONA": "AMBOS", "APLICA_RF": "NO", "APLICA_RETEIVA": "SI", "APLICA_RETEICA": "NO", "NOTA": "NO retefuente renta (E.T. art. 911). Sí Rete IVA. NO ReteICA (Acuerdo 023/2025 art. 87 num. 6)."}, "PUBLICA": {"CODIGO": "PUBLICA", "NOMBRE": "Entidad pública / oficial", "TIPO_PERSONA": "PJ", "APLICA_RF": "NO", "APLICA_RETEIVA": "NO", "APLICA_RETEICA": "NO", "NOTA": "No retefuente, no son responsables de IVA (salvo que facturen con IVA, revisar), no ReteICA."}}, "tipos": {"CPS_383": {"CODIGO": "CPS_383", "CATEGORIA": "CONTRATO", "NOMBRE": "Servicios de persona natural con retención por tabla art. 383 (manifestó no tener 2 o más trabajadores)", "RF_MODO": "TABLA383", "RF_CONCEPTO": "Rentas de trabajo (art. 383)", "RF_PN_NODECL": null, "RF_PN_DECL": null, "RF_PJ": null, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "SI", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "SI", "FONDO_SEG": 0, "ICA_MODO": "CIIU", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "SI", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente por tabla de rentas de trabajo (art. 383 E.T., par. 2: PN que manifiesta por escrito no tener 2 o más trabajadores). El valor se digita tras la depuración (art. 388). Justicia Familiar solo si honorario mensual >= 10 SMLMV. ReteICA según actividad CIIU: el art. 383 no exime del ICA (Acuerdo 023 arts. 45, 76, 86)."}, "CPS_PROF": {"CODIGO": "CPS_PROF", "CATEGORIA": "CONTRATO", "NOMBRE": "Servicios profesionales / honorarios (tarifa fija)", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Honorarios", "RF_PN_NODECL": 0.1, "RF_PN_DECL": 0.1, "RF_PJ": 0.11, "RF_BASE_MIN_UVT": 0, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "SI", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "SI", "FONDO_SEG": 0, "ICA_MODO": "CIIU", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "SI", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente honorarios: PN 10%, PJ 11%; PN pasa al 11% cuando el contrato o los pagos acumulados del año superan 3.300 UVT (Dec. 1625 art. 1.2.4.3.1; la app lo aplica con el valor total del contrato). Tasa Pro Deporte excluida para PN (art. 183). Justicia Familiar: PN tope 10 SMLMV; PJ sin tope. ICA según actividad (máx 10x1000)."}, "CPS_OTROS": {"CODIGO": "CPS_OTROS", "CATEGORIA": "CONTRATO", "NOMBRE": "Servicios no profesionales (tarifa fija: logística, apoyo, eventos, etc.)", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Servicios", "RF_PN_NODECL": 0.06, "RF_PN_DECL": 0.04, "RF_PJ": 0.04, "RF_BASE_MIN_UVT": 2, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "SI", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "CIIU", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente servicios: no declarante 6%, declarante/PJ 4%. Base mínima 2 UVT (Dec. 572/2025). Pro Deporte excluida para PN (art. 183 - verificar criterio de Hacienda). Justicia Familiar sin tope (tabla de Hacienda)."}, "CONSULTORIA": {"CODIGO": "CONSULTORIA", "CATEGORIA": "CONTRATO", "NOMBRE": "Consultoría", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Consultoría", "RF_PN_NODECL": 0.1, "RF_PN_DECL": 0.1, "RF_PJ": 0.1, "RF_BASE_MIN_UVT": 0, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 10, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 10% (tabla de Hacienda; DIAN: PJ y PN declarante 11% en consultoría/honorarios - verificar). ICA 10x1000 (tabla Hacienda)."}, "INTERVENTORIA": {"CODIGO": "INTERVENTORIA", "CATEGORIA": "CONTRATO", "NOMBRE": "Interventoría y supervisión", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Honorarios (interventoría)", "RF_PN_NODECL": 0.1, "RF_PN_DECL": 0.1, "RF_PJ": 0.11, "RF_BASE_MIN_UVT": 0, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 6, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "PN 10%, PJ 11%. ICA 6x1000. No causa Fondo de Seguridad (no es obra)."}, "MANTENIMIENTO": {"CODIGO": "MANTENIMIENTO", "CATEGORIA": "CONTRATO", "NOMBRE": "Mantenimiento (bienes muebles/inmuebles, equipos)", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Servicios (mantenimiento)", "RF_PN_NODECL": 0.04, "RF_PN_DECL": 0.04, "RF_PJ": 0.04, "RF_BASE_MIN_UVT": 2, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 10, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Tabla de Hacienda: 4% todos. DIAN: PN no declarante 6% (servicios). Verificar. ICA 10x1000."}, "OBRA": {"CODIGO": "OBRA", "CATEGORIA": "CONTRATO", "NOMBRE": "Obra pública", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Contratos de construcción", "RF_PN_NODECL": 0.02, "RF_PN_DECL": 0.02, "RF_PJ": 0.02, "RF_BASE_MIN_UVT": 10, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0.05, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 6, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 2% contratos de construcción (Dec. 1625 art. 1.2.4.10.6). Fondo de Seguridad 5% (Ley 418/1997 art. 120, Ley 2272/2022). ICA 6x1000 (CIIU 41-43)."}, "SUMINISTROS": {"CODIGO": "SUMINISTROS", "CATEGORIA": "CONTRATO", "NOMBRE": "Suministros / compras", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Compras", "RF_PN_NODECL": 0.035, "RF_PN_DECL": 0.025, "RF_PJ": 0.025, "RF_BASE_MIN_UVT": 10, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "CIIU", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente compras: no declarante 3,5%, declarante/PJ 2,5%. Base mínima 10 UVT (Dec. 572/2025). ICA según actividad comercial (máx 10x1000)."}, "SUMINISTROS_AGRO": {"CODIGO": "SUMINISTROS_AGRO", "CATEGORIA": "CONTRATO", "NOMBRE": "Compra de productos agropecuarios sin procesamiento industrial", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Compras de productos agropecuarios sin procesar", "RF_PN_NODECL": 0.015, "RF_PN_DECL": 0.015, "RF_PJ": 0.015, "RF_BASE_MIN_UVT": 70, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "CIIU", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 1,5% para compras de bienes agrícolas o pecuarios sin procesamiento industrial (Dec. 1625/2016 art. 1.2.4.6.7, mod. Dec. 572/2025; base mínima 70 UVT). Café pergamino o cereza: 0,5%, editar. Normalmente sin IVA (E.T. art. 424). Si el vendedor es productor primario, no hay ReteICA (art. 55 num. 5); si es comerciante, CIIU 4620."}, "COMBUSTIBLE": {"CODIGO": "COMBUSTIBLE", "CATEGORIA": "CONTRATO", "NOMBRE": "Suministro de combustible", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Compras de combustibles", "RF_PN_NODECL": 0.001, "RF_PN_DECL": 0.001, "RF_PJ": 0.001, "RF_BASE_MIN_UVT": 10, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 10, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 0,1% combustibles derivados del petróleo (Dec. 1625). ICA 10x1000 (tabla Hacienda; CIIU 4731 = verificar en CIIU_ICA)."}, "TRANSPORTE": {"CODIGO": "TRANSPORTE", "CATEGORIA": "CONTRATO", "NOMBRE": "Prestación de servicios de transporte", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Servicios de transporte", "RF_PN_NODECL": 0.035, "RF_PN_DECL": 0.035, "RF_PJ": 0.035, "RF_BASE_MIN_UVT": 2, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 6, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Tabla Hacienda: 3,5%. DIAN: transporte de carga 1% (base 2 UVT), pasajeros terrestre 3,5% (base 10 UVT). Verificar según objeto. ICA 6x1000."}, "ARR_MUEBLES": {"CODIGO": "ARR_MUEBLES", "CATEGORIA": "CONTRATO", "NOMBRE": "Arrendamiento de bienes muebles (impresoras, equipos)", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Arrendamiento de bienes muebles", "RF_PN_NODECL": 0.035, "RF_PN_DECL": 0.035, "RF_PJ": 0.035, "RF_BASE_MIN_UVT": 0, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 5, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 3,5% (tabla Hacienda; DIAN arrendamiento muebles 4%). ICA 5x1000."}, "ARR_VEHICULOS": {"CODIGO": "ARR_VEHICULOS", "CATEGORIA": "CONTRATO", "NOMBRE": "Arrendamiento de vehículos / maquinaria", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Arrendamiento de bienes muebles (vehículos/maquinaria)", "RF_PN_NODECL": 0.04, "RF_PN_DECL": 0.04, "RF_PJ": 0.04, "RF_BASE_MIN_UVT": 0, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 5, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 4%. ICA 5x1000 (tabla Hacienda; CIIU 7710 = 8x1000 - verificar)."}, "ARR_INMUEBLES": {"CODIGO": "ARR_INMUEBLES", "CATEGORIA": "CONTRATO", "NOMBRE": "Arrendamiento de bienes inmuebles", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Arrendamiento de bienes inmuebles", "RF_PN_NODECL": 0.035, "RF_PN_DECL": 0.035, "RF_PJ": 0.035, "RF_BASE_MIN_UVT": 10, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 3,5% (base 10 UVT, Dec. 572/2025). Sin ReteICA (supuesto: arrendador no ejerce actividad gravada; si es inmobiliaria CIIU 6810 = 5x1000, editar)."}, "RESTAURANTE": {"CODIGO": "RESTAURANTE", "CATEGORIA": "CONTRATO", "NOMBRE": "Servicios de restaurante, cafetería, alimentación", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Servicios de restaurante", "RF_PN_NODECL": 0.035, "RF_PN_DECL": 0.035, "RF_PJ": 0.035, "RF_BASE_MIN_UVT": 2, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 4, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Retefuente 3,5% (servicios de restaurante y hotel). ICA 4x1000 (CIIU 5611-5629)."}, "CONV_COMUNALES": {"CODIGO": "CONV_COMUNALES", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio/contrato con organismos comunales (JAC, ASOCOMUNAL)", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Sin retefuente ni Rete IVA. Excluidos de Cultura (art. 194) y Adulto Mayor (art. 202). Sí Pro Deporte y Justicia Familiar. Exentos de ICA."}, "CONV_COMUNALES_OBRAS": {"CODIGO": "CONV_COMUNALES_OBRAS", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio con organismos comunales PARA OBRAS", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0.05, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Igual al anterior + Fondo de Seguridad 5% por ser obra."}, "CONV_ENTE_OBRAS": {"CODIGO": "CONV_ENTE_OBRAS", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio con cualquier ente PARA OBRAS (no comunal)", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0.05, "ICA_MODO": "FIJA", "ICA_TARIFA_X_MIL": 6, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Sin retefuente. Sin Cultura ni Adulto Mayor. Pro Deporte 2%, Justicia Familiar 2%, Fondo de Seguridad 5%, ICA 6x1000 (tabla dice '6X100' = error de digitación)."}, "CONV_COFINANCIACION": {"CODIGO": "CONV_COFINANCIACION", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio de cofinanciación con ente estatal u oficial", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "SI", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Sin retefuente. Rete IVA 15% si factura IVA. Todas las estampillas y la tasa. Exento de ICA."}, "CONV_EDUCATIVO": {"CODIGO": "CONV_EDUCATIVO", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio de prestación de servicios educativos (entes no públicos)", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Sin retefuente. Estampillas sí. Pro Deporte: tabla Hacienda dice SÍ, pero art. 183 excluye contratos 'educativos' - VERIFICAR. Exento de ICA."}, "CONV_ASOCIACION": {"CODIGO": "CONV_ASOCIACION", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio de asociación con ESAL (art. 96 Ley 489 / Dec. 092/2017)", "RF_MODO": "TARIFA", "RF_CONCEPTO": "Según el objeto (servicios por defecto)", "RF_PN_NODECL": 0.04, "RF_PN_DECL": 0.04, "RF_PJ": 0.04, "RF_BASE_MIN_UVT": 4, "RETEIVA": "NO", "ANCIANO": 0.04, "CULTURA": 0.015, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Si la ESAL es RTE (RUT 04) el régimen anula la retefuente automáticamente. Si es ordinaria, aplica retefuente según el objeto (por defecto servicios 4% - editar si es compra). Sin Rete IVA. Estampillas y tasa sí."}, "INTERADMIN_DESC": {"CODIGO": "INTERADMIN_DESC", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio/contrato interadministrativo con descentralizadas municipales (ESP, EMVIAS, Hospital)", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "ANCIANO 4%; CULTURA 1,5%; DEPORTE 2%; ICA según actividad", "NOTAS": "Hacienda solo retiene Justicia Familiar 2%. Las demás estampillas y el ICA los debe recaudar el ejecutor al contratar con terceros (art. 184 par. 1). La app registra el valor esperado de seguimiento."}, "INTERADMIN_OTRAS": {"CODIGO": "INTERADMIN_OTRAS", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio/contrato interadministrativo con otras entidades (Gobernación, Nación, Ministerios, departamentales)", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "ANCIANO 4%; CULTURA 1,5%; ICA según actividad", "NOTAS": "Hacienda retiene Pro Deporte 2% y Justicia Familiar 2%. Adulto Mayor excluida (art. 202). Cultura: excluida por analogía (tabla Hacienda) - VERIFICAR."}, "INTERADMIN_IE": {"CODIGO": "INTERADMIN_IE", "CATEGORIA": "CONVENIO", "NOMBRE": "Convenio interadministrativo con instituciones educativas públicas", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Excluidas de Cultura (art. 194), Adulto Mayor (art. 202) y Pro Deporte (art. 183 'educativos'). Sí Justicia Familiar."}, "LIGAS": {"CODIGO": "LIGAS", "CATEGORIA": "CONVENIO", "NOMBRE": "Contrato/convenio con ligas deportivas", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Excluidas de Cultura (art. 194). Adulto Mayor NO (tabla Hacienda). Sí Pro Deporte y Justicia Familiar. Retefuente: normalmente ESAL-RTE; si fuera ordinaria, editar."}, "SENTENCIAS": {"CODIGO": "SENTENCIAS", "CATEGORIA": "CONVENIO", "NOMBRE": "Cumplimiento de sentencias judiciales o actas de conciliación", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Excluidos de Cultura y Adulto Mayor. Tabla Hacienda: sí Pro Deporte y Justicia Familiar. Retefuente depende de la naturaleza del pago (indemnización vs. honorarios) - editar si aplica."}, "EMPRESTITO": {"CODIGO": "EMPRESTITO", "CATEGORIA": "CONVENIO", "NOMBRE": "Contratos de empréstito / servicio de la deuda", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Excluidos de Cultura y Adulto Mayor. Pro Deporte excluida por art. 183 (servicio de la deuda) aunque la tabla de Hacienda dice SÍ - VERIFICAR. Justicia Familiar según tabla Hacienda."}, "PRESTAMO_VIVIENDA": {"CODIGO": "PRESTAMO_VIVIENDA", "CATEGORIA": "CONVENIO", "NOMBRE": "Préstamos de vivienda", "RF_MODO": "NINGUNA", "RF_CONCEPTO": "No aplica", "RF_PN_NODECL": 0, "RF_PN_DECL": 0, "RF_PJ": 0, "RF_BASE_MIN_UVT": 0, "RETEIVA": "NO", "ANCIANO": 0, "CULTURA": 0, "DEPORTE": 0.02, "DEPORTE_EXCLUYE_PN": "NO", "FAMILIAR": 0.02, "FAMILIAR_TOPE_PN": "NO", "FONDO_SEG": 0, "ICA_MODO": "NO", "ICA_TARIFA_X_MIL": null, "TIMBRE": 0, "PIDE_VALOR_MENSUAL": "NO", "SEGUIMIENTO_EJECUTOR": "", "NOTAS": "Excluidos de Cultura y Adulto Mayor. Tabla Hacienda: sí Pro Deporte y Justicia Familiar."}}, "tiposOrden": ["CPS_383", "CPS_PROF", "CPS_OTROS", "CONSULTORIA", "INTERVENTORIA", "MANTENIMIENTO", "OBRA", "SUMINISTROS", "SUMINISTROS_AGRO", "COMBUSTIBLE", "TRANSPORTE", "ARR_MUEBLES", "ARR_VEHICULOS", "ARR_INMUEBLES", "RESTAURANTE", "CONV_COMUNALES", "CONV_COMUNALES_OBRAS", "CONV_ENTE_OBRAS", "CONV_COFINANCIACION", "CONV_EDUCATIVO", "CONV_ASOCIACION", "INTERADMIN_DESC", "INTERADMIN_OTRAS", "INTERADMIN_IE", "LIGAS", "SENTENCIAS", "EMPRESTITO", "PRESTAMO_VIVIENDA"], "conceptos": {"RF": {"CODIGO": "RF", "NOMBRE": "Retención en la fuente a título de renta", "BASE": "Valor antes de IVA", "NORMA": "E.T. arts. 365 ss., 383, 392, 401; Dec. 1625/2016"}, "RETEIVA": {"CODIGO": "RETEIVA", "NOMBRE": "Retención de IVA (Rete IVA)", "BASE": "IVA facturado", "NORMA": "E.T. art. 437-1 y 437-2 num. 1"}, "ANCIANO": {"CODIGO": "ANCIANO", "NOMBRE": "Estampilla para el Bienestar del Adulto Mayor", "BASE": "Valor antes de IVA", "NORMA": "Acuerdo 023/2025 arts. 195-202; Ley 687/2001, Ley 1276/2009"}, "CULTURA": {"CODIGO": "CULTURA", "NOMBRE": "Estampilla Pro Cultura", "BASE": "Valor antes de IVA", "NORMA": "Acuerdo 023/2025 arts. 187-194; Ley 397/1997 art. 38"}, "DEPORTE": {"CODIGO": "DEPORTE", "NOMBRE": "Tasa Pro Deporte y Recreación", "BASE": "Valor antes de IVA", "NORMA": "Acuerdo 023/2025 arts. 180-186; Ley 2023/2020"}, "FAMILIAR": {"CODIGO": "FAMILIAR", "NOMBRE": "Estampilla para la Justicia Familiar", "BASE": "Valor antes de IVA (incluye anticipo)", "NORMA": "Acuerdo 023/2025 arts. 167-173; Acuerdo 005/2023; Ley 2126/2021"}, "FONDO_SEG": {"CODIGO": "FONDO_SEG", "NOMBRE": "Contribución especial Fondo de Seguridad (obra pública)", "BASE": "Valor antes de IVA", "NORMA": "Ley 418/1997 art. 120, prorrogada Ley 2272/2022"}, "ICA": {"CODIGO": "ICA", "NOMBRE": "Retención de Industria y Comercio (ReteICA)", "BASE": "Valor antes de IVA", "NORMA": "Acuerdo 023/2025 arts. 57, 76-88"}, "TIMBRE": {"CODIGO": "TIMBRE", "NOMBRE": "Impuesto de timbre", "BASE": "Valor antes de IVA", "NORMA": "E.T. art. 519; tarifa 0% desde 01/01/2026 (Ley 1111/2006)"}}, "ciiu": [{"ciiu": "0111", "desc": "Cultivo de cereales (excepto arroz), legumbres y semillas oleaginosas", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0113", "desc": "Cultivo de hortalizas, raíces y tubérculos", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0121", "desc": "Cultivo de frutas tropicales y subtropicales", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0122", "desc": "Cultivo de plátano y banano", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0123", "desc": "Cultivo de café", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0124", "desc": "Cultivo de caña de azúcar", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0125", "desc": "Cultivo de flor de corte", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0127", "desc": "Cultivo de plantas con las que se preparan bebidas", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0141", "desc": "Cría de ganado bovino y bufalino", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0142", "desc": "Cría de caballos y otros equinos", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0143", "desc": "Cría de ovejas y cabras", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0144", "desc": "Cría de ganado porcino", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0145", "desc": "Cría de aves de corral", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0149", "desc": "Cría de otros animales n.c.p.", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0150", "desc": "Explotación mixta (agrícola y pecuaria)", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0161", "desc": "Actividades de apoyo a la agricultura", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0162", "desc": "Actividades de apoyo a la ganadería", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0210", "desc": "Silvicultura y otras actividades forestales", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0322", "desc": "Acuicultura de agua dulce", "tarifa": 0, "obs": "No sujeta a ICA: producción primaria agrícola, ganadera o avícola sin transformación (Acuerdo 023/2025 art. 55 num. 5). No está en la tabla del art. 57.", "nosujeta": true}, {"ciiu": "0510", "desc": "Extracción de hulla (carbón de piedra)", "tarifa": 8.0, "obs": ""}, {"ciiu": "0520", "desc": "Extracción de carbón lignito", "tarifa": 8.0, "obs": ""}, {"ciiu": "0722", "desc": "Extracción de oro y otros metales preciosos", "tarifa": 8.0, "obs": ""}, {"ciiu": "0723", "desc": "Extracción de minerales de níquel", "tarifa": 8.0, "obs": ""}, {"ciiu": "0729", "desc": "Extracción de otros minerales metalíferos no ferrosos n.c.p.", "tarifa": 8.0, "obs": ""}, {"ciiu": "0811", "desc": "Extracción de piedra, arena, arcillas comunes, yeso y anhidrita", "tarifa": 8.0, "obs": ""}, {"ciiu": "0812", "desc": "Extracción de arcillas de uso industrial, caliza, caolín y bentonitas", "tarifa": 8.0, "obs": ""}, {"ciiu": "0891", "desc": "Extracción de minerales para la fabricación de abonos y productos químicos", "tarifa": 8.0, "obs": ""}, {"ciiu": "0899", "desc": "Extracción de otros minerales no metálicos n.c.p.", "tarifa": 8.0, "obs": ""}, {"ciiu": "0990", "desc": "Actividades de apoyo para otras actividades de explotación de minas y canteras", "tarifa": 8.0, "obs": ""}, {"ciiu": "1011", "desc": "Procesamiento y conservación de carne y productos cárnicos", "tarifa": 6.0, "obs": ""}, {"ciiu": "1012", "desc": "Procesamiento y conservación de pescados, crustáceos y moluscos", "tarifa": 6.0, "obs": ""}, {"ciiu": "1020", "desc": "Procesamiento y conservación de frutas, legumbres, hortalizas y tubérculos", "tarifa": 6.0, "obs": ""}, {"ciiu": "1030", "desc": "Elaboración de aceites y grasas de origen vegetal y animal", "tarifa": 6.0, "obs": ""}, {"ciiu": "1040", "desc": "Elaboración de productos lácteos", "tarifa": 6.0, "obs": ""}, {"ciiu": "1051", "desc": "Elaboración de productos de molinería", "tarifa": 6.0, "obs": ""}, {"ciiu": "1061", "desc": "Trilla de café", "tarifa": 6.0, "obs": ""}, {"ciiu": "1062", "desc": "Descafeinado, tostión y molienda del café", "tarifa": 6.0, "obs": ""}, {"ciiu": "1063", "desc": "Otros derivados del café", "tarifa": 6.0, "obs": ""}, {"ciiu": "1071", "desc": "Elaboración y refinación de azúcar", "tarifa": 6.0, "obs": ""}, {"ciiu": "1072", "desc": "Elaboración de panela", "tarifa": 6.0, "obs": ""}, {"ciiu": "1081", "desc": "Elaboración de productos de panadería", "tarifa": 6.0, "obs": ""}, {"ciiu": "1082", "desc": "Elaboración de cacao, chocolate y productos de confitería", "tarifa": 6.0, "obs": ""}, {"ciiu": "1083", "desc": "Elaboración de macarrones, fideos, alcuzcuz y productos farináceos similares", "tarifa": 6.0, "obs": ""}, {"ciiu": "1089", "desc": "Elaboración de otros productos alimenticios n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "1090", "desc": "Elaboración de alimentos preparados para animales", "tarifa": 6.0, "obs": ""}, {"ciiu": "1101", "desc": "Destilación, rectificación y mezcla de bebidas alcohólicas", "tarifa": 6.0, "obs": ""}, {"ciiu": "1102", "desc": "Elaboración de bebidas fermentadas no destiladas", "tarifa": 6.0, "obs": ""}, {"ciiu": "1103", "desc": "Producción de malta, elaboración de cervezas y otras bebidas malteadas", "tarifa": 6.0, "obs": ""}, {"ciiu": "1104", "desc": "Elaboración de bebidas no alcohólicas, producción de aguas minerales y de otras aguas embotelladas", "tarifa": 6.0, "obs": ""}, {"ciiu": "1311", "desc": "Preparación e hilatura de fibras textiles", "tarifa": 6.0, "obs": ""}, {"ciiu": "1312", "desc": "Tejeduría de productos textiles", "tarifa": 6.0, "obs": ""}, {"ciiu": "1313", "desc": "Acabado de productos textiles", "tarifa": 6.0, "obs": ""}, {"ciiu": "1391", "desc": "Fabricación de tejidos de punto y ganchillo", "tarifa": 6.0, "obs": ""}, {"ciiu": "1392", "desc": "Confección de artículos con materiales textiles, excepto prendas de vestir", "tarifa": 6.0, "obs": ""}, {"ciiu": "1393", "desc": "Fabricación de tapetes y alfombras para pisos", "tarifa": 6.0, "obs": ""}, {"ciiu": "1394", "desc": "Fabricación de cuerdas, cordeles, cables, bramantes y redes", "tarifa": 6.0, "obs": ""}, {"ciiu": "1399", "desc": "Fabricación de otros artículos textiles n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "1410", "desc": "Confección de prendas de vestir, excepto prendas de piel", "tarifa": 6.0, "obs": ""}, {"ciiu": "1420", "desc": "Fabricación de artículos de piel", "tarifa": 6.0, "obs": ""}, {"ciiu": "1511", "desc": "Curtido y recurtido de cueros; recurtido y teñido de pieles", "tarifa": 6.0, "obs": ""}, {"ciiu": "1512", "desc": "Fabricación de artículos de viaje, bolsos de mano y artículos similares elaborados en cuero, y fabricación de artículos de talabartería y guarnicionería", "tarifa": 6.0, "obs": ""}, {"ciiu": "1513", "desc": "Fabricación de artículos de viaje, bolsos de mano y artículos similares; artículos de talabartería y guarnicionería elaborados en otros materiales", "tarifa": 6.0, "obs": ""}, {"ciiu": "1521", "desc": "Fabricación de calzado de cuero y piel, con cualquier tipo de suela", "tarifa": 6.0, "obs": ""}, {"ciiu": "1522", "desc": "Fabricación de otros tipos de calzado, excepto calzado de cuero y piel", "tarifa": 6.0, "obs": ""}, {"ciiu": "1523", "desc": "Fabricación de partes del calzado", "tarifa": 6.0, "obs": ""}, {"ciiu": "1610", "desc": "Aserrado, acepillado e impregnación de la madera", "tarifa": 6.0, "obs": ""}, {"ciiu": "1620", "desc": "Fabricación de hojas de madera para enchapado; fabricación de tableros contrachapados, tableros laminados, tableros de partículas y otros tableros y paneles", "tarifa": 6.0, "obs": ""}, {"ciiu": "1630", "desc": "Fabricación de partes y piezas de madera, de carpintería y ebanistería para la construcción", "tarifa": 6.0, "obs": ""}, {"ciiu": "1640", "desc": "Fabricación de recipientes de madera", "tarifa": 6.0, "obs": ""}, {"ciiu": "1690", "desc": "Fabricación de otros productos de madera; fabricación de artículos de corcho, cestería y espartería", "tarifa": 6.0, "obs": ""}, {"ciiu": "1701", "desc": "Fabricación de pulpas (pastas) celulósicas; papel y cartón", "tarifa": 6.0, "obs": ""}, {"ciiu": "1702", "desc": "Fabricación de papel y cartón ondulado (corrugado); fabricación de envases, empaques y de embalajes de papel y cartón.", "tarifa": 6.0, "obs": ""}, {"ciiu": "1709", "desc": "Fabricación de otros artículos de papel y cartón", "tarifa": 6.0, "obs": ""}, {"ciiu": "2011", "desc": "Fabricación de sustancias y productos químicos básicos", "tarifa": 6.0, "obs": ""}, {"ciiu": "2012", "desc": "Fabricación de abonos y compuestos inorgánicos nitrogenados", "tarifa": 6.0, "obs": ""}, {"ciiu": "2013", "desc": "Fabricación de plásticos en formas primarias", "tarifa": 6.0, "obs": ""}, {"ciiu": "2014", "desc": "Fabricación de caucho sintético en formas primarias", "tarifa": 6.0, "obs": ""}, {"ciiu": "2021", "desc": "Fabricación de plaguicidas y otros productos químicos de uso agropecuario", "tarifa": 6.0, "obs": ""}, {"ciiu": "2022", "desc": "Fabricación de pinturas, barnices y revestimientos similares, tintas para impresión y masillas", "tarifa": 6.0, "obs": ""}, {"ciiu": "2023", "desc": "Fabricación de jabones y detergentes, preparados para limpiar y pulir; perfumes y preparados de tocador", "tarifa": 6.0, "obs": ""}, {"ciiu": "2029", "desc": "Fabricación de otros productos químicos n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "2030", "desc": "Fabricación de fibras sintéticas y artificiales", "tarifa": 6.0, "obs": ""}, {"ciiu": "2100", "desc": "Fabricación de productos farmacéuticos, sustancias químicas medicinales y productos botánicos de uso farmacéutico", "tarifa": 6.0, "obs": ""}, {"ciiu": "2212", "desc": "Reencauche de llantas usadas", "tarifa": 6.0, "obs": ""}, {"ciiu": "2219", "desc": "Fabricación de formas básicas de caucho y otros productos de caucho n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "2221", "desc": "Fabricación de formas básicas de plástico", "tarifa": 6.0, "obs": ""}, {"ciiu": "2229", "desc": "Fabricación de artículos de plástico n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "2310", "desc": "Fabricación de vidrio y productos de vidrio", "tarifa": 6.0, "obs": ""}, {"ciiu": "2399", "desc": "Fabricación de otros productos minerales no metálicos n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "2410", "desc": "Industrias básicas de hierro y de acero", "tarifa": 6.0, "obs": ""}, {"ciiu": "2421", "desc": "Industrias básicas de metales preciosos", "tarifa": 6.0, "obs": ""}, {"ciiu": "2429", "desc": "Industrias básicas de otros metales no ferrosos", "tarifa": 6.0, "obs": ""}, {"ciiu": "2431", "desc": "Fundición de hierro y de acero", "tarifa": 6.0, "obs": ""}, {"ciiu": "2432", "desc": "Fundición de metales no ferrosos", "tarifa": 6.0, "obs": ""}, {"ciiu": "2511", "desc": "Fabricación de productos metálicos para uso estructural", "tarifa": 6.0, "obs": ""}, {"ciiu": "2512", "desc": "Fabricación de tanques, depósitos y recipientes de metal, excepto los utilizados para el envase o transporte de mercancías", "tarifa": 6.0, "obs": ""}, {"ciiu": "2513", "desc": "Fabricación de generadores de vapor, excepto calderas de agua caliente para calefacción central", "tarifa": 6.0, "obs": ""}, {"ciiu": "2819", "desc": "Fabricación de otros tipos de maquinaria y equipo de uso general n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "2829", "desc": "Fabricación de otros tipos de maquinaria y equipo de uso especial n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "3290", "desc": "Otras industrias manufactureras n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "3311", "desc": "Mantenimiento y reparación especializado de productos elaborados en metal", "tarifa": 6.0, "obs": ""}, {"ciiu": "3312", "desc": "Mantenimiento y reparación especializado de maquinaria y equipo", "tarifa": 6.0, "obs": ""}, {"ciiu": "3313", "desc": "Mantenimiento y reparación especializado de equipo electrónico y óptico", "tarifa": 6.0, "obs": ""}, {"ciiu": "3314", "desc": "Mantenimiento y reparación especializado de equipo eléctrico", "tarifa": 6.0, "obs": ""}, {"ciiu": "3315", "desc": "Mantenimiento y reparación especializado de equipo de transporte, excepto los vehículos automotores, motocicletas y bicicletas", "tarifa": 6.0, "obs": ""}, {"ciiu": "3319", "desc": "Mantenimiento y reparación de otros tipos de equipos y sus componentes n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "3320", "desc": "Instalación especializada de maquinaria y equipo industrial", "tarifa": 6.0, "obs": ""}, {"ciiu": "3511", "desc": "Generación de energía eléctrica", "tarifa": 10.0, "obs": ""}, {"ciiu": "3512", "desc": "Transmisión de energía eléctrica", "tarifa": 10.0, "obs": ""}, {"ciiu": "3514", "desc": "Comercialización de energía eléctrica", "tarifa": 10.0, "obs": ""}, {"ciiu": "3520", "desc": "Producción de gas; distribución de combustibles gaseosos por tuberías", "tarifa": 10.0, "obs": ""}, {"ciiu": "3530", "desc": "Suministro de vapor y aire acondicionado", "tarifa": 10.0, "obs": ""}, {"ciiu": "3600", "desc": "Captación, tratamiento y distribución de agua", "tarifa": 10.0, "obs": ""}, {"ciiu": "3700", "desc": "Evacuación y tratamiento de aguas residuales", "tarifa": 10.0, "obs": ""}, {"ciiu": "3811", "desc": "Recolección de desechos no peligrosos", "tarifa": 3.0, "obs": ""}, {"ciiu": "3812", "desc": "Recolección de desechos peligrosos", "tarifa": 3.0, "obs": ""}, {"ciiu": "3821", "desc": "Tratamiento y disposición de desechos no peligrosos", "tarifa": 3.0, "obs": ""}, {"ciiu": "3822", "desc": "Tratamiento y disposición de desechos peligrosos", "tarifa": 3.0, "obs": ""}, {"ciiu": "3830", "desc": "Recuperación de materiales", "tarifa": 3.0, "obs": ""}, {"ciiu": "3900", "desc": "Actividades de saneamiento ambiental y otros servicios de gestión de desechos", "tarifa": 3.0, "obs": ""}, {"ciiu": "4111", "desc": "Construcción de edificios residenciales", "tarifa": 6.0, "obs": ""}, {"ciiu": "4112", "desc": "Construcción de edificios no residenciales", "tarifa": 6.0, "obs": ""}, {"ciiu": "4210", "desc": "Construcción de carreteras y vías de ferrocarril", "tarifa": 6.0, "obs": ""}, {"ciiu": "4220", "desc": "Construcción de proyectos de servicio público", "tarifa": 6.0, "obs": ""}, {"ciiu": "4290", "desc": "Construcción de otras obras de ingeniería civil", "tarifa": 6.0, "obs": ""}, {"ciiu": "4311", "desc": "Demolición", "tarifa": 6.0, "obs": ""}, {"ciiu": "4312", "desc": "Preparación del terreno", "tarifa": 6.0, "obs": ""}, {"ciiu": "4321", "desc": "Instalaciones eléctricas", "tarifa": 6.0, "obs": ""}, {"ciiu": "4322", "desc": "Instalaciones de fontanería, calefacción y aire acondicionado", "tarifa": 6.0, "obs": ""}, {"ciiu": "4329", "desc": "Otras instalaciones especializadas", "tarifa": 6.0, "obs": ""}, {"ciiu": "4330", "desc": "Terminación y acabado de edificios y obras de ingeniería civil", "tarifa": 6.0, "obs": ""}, {"ciiu": "4390", "desc": "Otras actividades especializadas para la construcción de edificios y obras de ingeniería civil", "tarifa": 6.0, "obs": ""}, {"ciiu": "4511", "desc": "Comercio de vehículos automotores nuevos", "tarifa": 6.0, "obs": ""}, {"ciiu": "4512", "desc": "Comercio de vehículos automotores usados", "tarifa": 6.0, "obs": ""}, {"ciiu": "4520", "desc": "Mantenimiento y reparación de vehículos automotores", "tarifa": null, "obs": "El Acuerdo no trae tarifa; digitarla"}, {"ciiu": "4530", "desc": "Comercio de partes, piezas (autopartes) y accesorios (lujos) para vehículos automotores", "tarifa": 6.0, "obs": ""}, {"ciiu": "4542", "desc": "Mantenimiento y reparación de motocicletas y de sus partes y piezas", "tarifa": 6.0, "obs": ""}, {"ciiu": "4610", "desc": "Comercio al por mayor a cambio de una retribución o por contrata", "tarifa": 10.0, "obs": ""}, {"ciiu": "4620", "desc": "Comercio al por mayor de materias primas agropecuarias; animales vivos (ganado, semovientes)", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4631", "desc": "Comercio al por mayor de productos alimenticios", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4632", "desc": "Comercio al por mayor de bebidas y tabaco", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4641", "desc": "Comercio al por mayor de productos textiles", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4642", "desc": "Comercio al por mayor de prendas de vestir", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4643", "desc": "Comercio al por mayor de calzado", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4644", "desc": "Comercio al por mayor de aparatos y equipo de uso doméstico", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4645", "desc": "Comercio al por mayor de productos farmacéuticos, medicinales, cosméticos y de tocador", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4649", "desc": "Comercio al por mayor de otros utensilios domésticos n.c.p.", "tarifa": 10.0, "obs": ""}, {"ciiu": "4651", "desc": "Comercio al por mayor de computadores, equipo periférico y programas de informática", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4652", "desc": "Comercio al por mayor de equipo, partes y piezas electrónicos y de telecomunicaciones", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4653", "desc": "Comercio al por mayor de maquinaria y equipo agropecuarios", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4659", "desc": "Comercio al por mayor de otros tipos de maquinaria y equipo n.c.p.", "tarifa": 10.0, "obs": ""}, {"ciiu": "4661", "desc": "Comercio al por mayor de combustibles sólidos, líquidos, gaseosos y productos conexos", "tarifa": 10.0, "obs": ""}, {"ciiu": "4663", "desc": "Comercio al por mayor de materiales de construcción, artículos de ferretería, pinturas, vidrio", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4664", "desc": "Comercio al por mayor de productos químicos básicos, cauchos y plásticos, abonos", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4665", "desc": "Comercio al por mayor de desperdicios, desechos y chatarra", "tarifa": 10, "obs": "Código no incluido en el Acuerdo 023/2025. Se sugiere la tarifa de comercio al por mayor no especializado (4690 = 10 x mil). Verificar con Hacienda."}, {"ciiu": "4669", "desc": "Comercio al por mayor de otros productos n.c.p.", "tarifa": 10.0, "obs": ""}, {"ciiu": "4690", "desc": "Comercio al por mayor no especializado", "tarifa": 10.0, "obs": ""}, {"ciiu": "4711", "desc": "Comercio al por menor en establecimientos no especializados con surtido compuesto principalmente por alimentos, bebidas o tabaco", "tarifa": 3.0, "obs": ""}, {"ciiu": "4719", "desc": "Comercio al por menor en establecimientos no especializados, con surtido compuesto principalmente por productos diferentes de alimentos (víveres en general), bebidas y tabaco", "tarifa": 3.0, "obs": ""}, {"ciiu": "4721", "desc": "Comercio al por menor de productos agrícolas para el consumo en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4722", "desc": "Comercio al por menor de leche, productos lácteos y huevos, en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4723", "desc": "Comercio al por menor de carnes (incluye aves de corral), productos cárnicos, pescados y", "tarifa": 3.0, "obs": ""}, {"ciiu": "4724", "desc": "Comercio al por menor de bebidas y productos del tabaco, en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4729", "desc": "Comercio al por menor de otros productos alimenticios n.c.p., en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4731", "desc": "Comercio al por menor de combustible para automotores", "tarifa": 3.0, "obs": ""}, {"ciiu": "4732", "desc": "Comercio al por menor de lubricantes (aceites, grasas), aditivos y productos de limpieza para vehículos automotores", "tarifa": 3.0, "obs": ""}, {"ciiu": "4741", "desc": "Comercio al por menor de computadores, equipos periféricos, programas de informática y equipos de telecomunicaciones en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4742", "desc": "Comercio al por menor de equipos y aparatos de sonido y de video, en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4751", "desc": "Comercio al por menor de productos textiles en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4752", "desc": "Comercio al por menor de artículos de ferretería, pinturas y productos de vidrio en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4753", "desc": "Comercio al por menor de tapices, alfombras y cubrimientos para paredes y pisos en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4754", "desc": "Comercio al por menor de electrodomésticos y gasodomésticos de uso doméstico, muebles y equipos de iluminación", "tarifa": 3.0, "obs": ""}, {"ciiu": "4755", "desc": "Comercio al por menor de artículos y utensilios de uso doméstico", "tarifa": 3.0, "obs": ""}, {"ciiu": "4759", "desc": "Comercio al por menor de otros artículos domésticos en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4761", "desc": "Comercio al por menor de libros, periódicos, materiales y artículos de papelería y escritorio, en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4762", "desc": "Comercio al por menor de artículos deportivos, en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4769", "desc": "Comercio al por menor de otros artículos culturales y de entretenimiento n.c.p. en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4771", "desc": "Comercio al por menor de prendas de vestir y sus accesorios (incluye artículos de piel) en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4772", "desc": "Comercio al por menor de todo tipo de calzado y artículos de cuero y sucedáneos del cuero en establecimientos especializados.", "tarifa": 3.0, "obs": ""}, {"ciiu": "4773", "desc": "Comercio al por menor de productos farmacéuticos y medicinales, cosméticos y artículos de tocador en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4774", "desc": "Comercio al por menor de otros productos nuevos en establecimientos especializados", "tarifa": 3.0, "obs": ""}, {"ciiu": "4775", "desc": "Comercio al por menor de artículos de segunda mano", "tarifa": 3.0, "obs": ""}, {"ciiu": "4781", "desc": "Comercio al por menor de alimentos, bebidas y tabaco, en puestos de venta móviles", "tarifa": 3.0, "obs": ""}, {"ciiu": "4782", "desc": "Comercio al por menor de productos textiles, prendas de vestir y calzado, en puestos de venta móviles", "tarifa": 3.0, "obs": ""}, {"ciiu": "4789", "desc": "Comercio al por menor de otros productos en puestos de venta móviles", "tarifa": 3.0, "obs": ""}, {"ciiu": "4791", "desc": "Comercio al por menor realizado a través de Internet", "tarifa": 3.0, "obs": ""}, {"ciiu": "4792", "desc": "Comercio al por menor realizado a través de casas de venta o por correo", "tarifa": 3.0, "obs": ""}, {"ciiu": "4799", "desc": "Otros tipos de comercio al por menor no realizado en establecimientos, puestos de venta o mercados.", "tarifa": 3.0, "obs": ""}, {"ciiu": "4921", "desc": "Transporte de pasajeros", "tarifa": 6.0, "obs": ""}, {"ciiu": "4922", "desc": "Transporte mixto", "tarifa": 6.0, "obs": ""}, {"ciiu": "4923", "desc": "Transporte de carga por carretera", "tarifa": 6.0, "obs": ""}, {"ciiu": "5210", "desc": "Almacenamiento y depósito", "tarifa": 6.0, "obs": ""}, {"ciiu": "5221", "desc": "Actividades de estaciones, vías y servicios complementarios para el transporte terrestre", "tarifa": 6.0, "obs": ""}, {"ciiu": "5229", "desc": "Otras actividades complementarias al transporte", "tarifa": 6.0, "obs": ""}, {"ciiu": "5310", "desc": "Actividades postales nacionales", "tarifa": 6.0, "obs": ""}, {"ciiu": "5320", "desc": "Actividades de mensajería", "tarifa": 6.0, "obs": ""}, {"ciiu": "5511", "desc": "Alojamiento en hoteles", "tarifa": 4.0, "obs": ""}, {"ciiu": "5512", "desc": "Alojamiento en apartahoteles", "tarifa": 4.0, "obs": ""}, {"ciiu": "5513", "desc": "Alojamiento en centros vacacionales", "tarifa": 4.0, "obs": ""}, {"ciiu": "5514", "desc": "Alojamiento rural", "tarifa": 4.0, "obs": ""}, {"ciiu": "5519", "desc": "Otros tipos de alojamientos para visitantes", "tarifa": 4.0, "obs": ""}, {"ciiu": "5520", "desc": "Actividades de zonas de camping y parques para vehículos recreacionales", "tarifa": 4.0, "obs": ""}, {"ciiu": "5530", "desc": "Servicio por horas", "tarifa": 4.0, "obs": ""}, {"ciiu": "5590", "desc": "Otros tipos de alojamiento n.c.p.", "tarifa": 4.0, "obs": ""}, {"ciiu": "5611", "desc": "Expendio a la mesa de comidas preparadas", "tarifa": 4.0, "obs": ""}, {"ciiu": "5612", "desc": "Expendio por autoservicio de comidas preparadas", "tarifa": 4.0, "obs": ""}, {"ciiu": "5613", "desc": "Expendio de comidas preparadas en cafeterías", "tarifa": 4.0, "obs": ""}, {"ciiu": "5619", "desc": "Otros tipos de expendio de comidas preparadas n.c.p.", "tarifa": 4.0, "obs": ""}, {"ciiu": "5621", "desc": "Catering para eventos", "tarifa": 4.0, "obs": ""}, {"ciiu": "5629", "desc": "Actividades de otros servicios de comidas", "tarifa": 4.0, "obs": ""}, {"ciiu": "5630", "desc": "Expendio de bebidas alcohólicas para el consumo dentro del establecimiento", "tarifa": 9.0, "obs": ""}, {"ciiu": "6010", "desc": "Actividades de programación y transmisión en el servicio de radiodifusión sonora", "tarifa": 6.0, "obs": ""}, {"ciiu": "6020", "desc": "Actividades de programación y transmisión de televisión", "tarifa": 8.0, "obs": ""}, {"ciiu": "6110", "desc": "Actividades de telecomunicaciones alámbricas", "tarifa": 8.0, "obs": ""}, {"ciiu": "6120", "desc": "Actividades de telecomunicaciones inalámbricas", "tarifa": 8.0, "obs": ""}, {"ciiu": "6130", "desc": "Actividades de telecomunicación satelital", "tarifa": 8.0, "obs": ""}, {"ciiu": "6190", "desc": "Otras actividades de telecomunicaciones", "tarifa": 8.0, "obs": ""}, {"ciiu": "6201", "desc": "Actividades de desarrollo de sistemas informáticos (planificación, análisis, diseño, programación, pruebas)", "tarifa": 6.0, "obs": ""}, {"ciiu": "6209", "desc": "Otras actividades de tecnologías de información y actividades de servicios informáticos", "tarifa": 6.0, "obs": ""}, {"ciiu": "6391", "desc": "Actividades de agencias de noticias", "tarifa": 6.0, "obs": ""}, {"ciiu": "6399", "desc": "Otras actividades de servicio de información n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "6412", "desc": "Bancos comerciales", "tarifa": 8.0, "obs": ""}, {"ciiu": "6421", "desc": "Actividades de las corporaciones financieras", "tarifa": 10.0, "obs": "El Acuerdo lo trae dos veces (10 y 8); se deja 10"}, {"ciiu": "6422", "desc": "Actividades de las compañías de financiamiento", "tarifa": 10.0, "obs": ""}, {"ciiu": "6424", "desc": "Actividades de las cooperativas financieras", "tarifa": 10.0, "obs": ""}, {"ciiu": "6432", "desc": "Fondos de cesantías", "tarifa": 10.0, "obs": ""}, {"ciiu": "6491", "desc": "Leasing financiero (arrendamiento financiero)", "tarifa": 10.0, "obs": ""}, {"ciiu": "6492", "desc": "Actividades financieras de fondos de empleados y otras formas asociativas del sector solidario", "tarifa": 10.0, "obs": ""}, {"ciiu": "6494", "desc": "Otras actividades de distribución de fondos", "tarifa": 10.0, "obs": ""}, {"ciiu": "6499", "desc": "Otras actividades de servicio financiero, excepto las de seguros y pensiones n.c.p.", "tarifa": 10.0, "obs": "El Acuerdo lo trae dos veces (10 y 8); se deja 10"}, {"ciiu": "6511", "desc": "Seguros generales", "tarifa": 8.0, "obs": ""}, {"ciiu": "6512", "desc": "Seguros de vida", "tarifa": 8.0, "obs": ""}, {"ciiu": "6513", "desc": "Reaseguros", "tarifa": 8.0, "obs": ""}, {"ciiu": "6514", "desc": "Capitalización", "tarifa": 8.0, "obs": ""}, {"ciiu": "6614", "desc": "Actividades de las casas de cambio", "tarifa": 8.0, "obs": ""}, {"ciiu": "6615", "desc": "Actividades de los profesionales de compra y venta de divisas", "tarifa": 8.0, "obs": ""}, {"ciiu": "6619", "desc": "Otras actividades auxiliares de las actividades de servicios financieros n.c.p.", "tarifa": 8.0, "obs": ""}, {"ciiu": "6621", "desc": "Actividades de agentes y corredores de seguros", "tarifa": 8.0, "obs": ""}, {"ciiu": "6810", "desc": "Actividades inmobiliarias realizadas con bienes propios o arrendados", "tarifa": 5.0, "obs": ""}, {"ciiu": "6820", "desc": "Actividades inmobiliarias realizadas a cambio de una retribución o por contrato", "tarifa": 5.0, "obs": ""}, {"ciiu": "6910", "desc": "Actividades jurídicas", "tarifa": 6.0, "obs": ""}, {"ciiu": "6920", "desc": "Actividades de contabilidad, teneduría de libros, auditoría financiera y asesoría tributaria", "tarifa": 6.0, "obs": ""}, {"ciiu": "7010", "desc": "Actividades de administración empresarial", "tarifa": 6.0, "obs": ""}, {"ciiu": "7110", "desc": "Actividades de arquitectura e ingeniería y otras actividades conexas de consultoría técnica", "tarifa": 6.0, "obs": ""}, {"ciiu": "7120", "desc": "Ensayos y análisis técnicos", "tarifa": 6.0, "obs": ""}, {"ciiu": "7210", "desc": "Investigaciones y desarrollo experimental en el campo de las ciencias naturales y la ingeniería", "tarifa": 6.0, "obs": ""}, {"ciiu": "7220", "desc": "Investigaciones y desarrollo experimental en el campo de las ciencias sociales y las humanidades", "tarifa": 6.0, "obs": ""}, {"ciiu": "7310", "desc": "Publicidad", "tarifa": 6.0, "obs": ""}, {"ciiu": "7320", "desc": "Estudios de mercado y realización de encuestas de opinión pública", "tarifa": 6.0, "obs": ""}, {"ciiu": "7410", "desc": "Actividades especializadas de diseño", "tarifa": 6.0, "obs": ""}, {"ciiu": "7420", "desc": "Actividades de fotografía", "tarifa": 6.0, "obs": ""}, {"ciiu": "7490", "desc": "Otras actividades profesionales, científicas y técnicas n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "7500", "desc": "Actividades veterinarias", "tarifa": 6.0, "obs": ""}, {"ciiu": "7710", "desc": "Alquiler y arrendamiento de vehículos automotores", "tarifa": 8.0, "obs": ""}, {"ciiu": "7729", "desc": "Alquiler y arrendamiento de otros efectos personales y enseres domésticos n.c.p.", "tarifa": 8.0, "obs": ""}, {"ciiu": "7730", "desc": "Alquiler y arrendamiento de otros tipos de maquinaria, equipo y bienes tangibles n.c.p.", "tarifa": 8.0, "obs": ""}, {"ciiu": "7810", "desc": "Actividades de agencias de empleo", "tarifa": 10.0, "obs": ""}, {"ciiu": "7830", "desc": "Otras actividades de suministro de recurso humano", "tarifa": 10.0, "obs": ""}, {"ciiu": "7911", "desc": "Actividades de las agencias de viaje", "tarifa": 6.0, "obs": ""}, {"ciiu": "7912", "desc": "Actividades de operadores turísticos", "tarifa": 6.0, "obs": ""}, {"ciiu": "7990", "desc": "Otros servicios de reserva y actividades relacionadas", "tarifa": 6.0, "obs": ""}, {"ciiu": "8010", "desc": "Actividades de seguridad privada", "tarifa": 5.0, "obs": ""}, {"ciiu": "8020", "desc": "Actividades de servicios de sistemas de seguridad", "tarifa": 5.0, "obs": ""}, {"ciiu": "8030", "desc": "Actividades de detectives e investigadores privados", "tarifa": 5.0, "obs": ""}, {"ciiu": "8110", "desc": "Actividades combinadas de apoyo a instalaciones", "tarifa": 3.0, "obs": ""}, {"ciiu": "8121", "desc": "Limpieza general interior de edificios", "tarifa": 3.0, "obs": ""}, {"ciiu": "8129", "desc": "Otras actividades de limpieza de edificios e instalaciones industriales", "tarifa": 3.0, "obs": ""}, {"ciiu": "8130", "desc": "Actividades de paisajismo y servicios de mantenimiento conexos", "tarifa": 3.0, "obs": ""}, {"ciiu": "8211", "desc": "Actividades combinadas de servicios administrativos de oficina", "tarifa": 6.0, "obs": ""}, {"ciiu": "8219", "desc": "Fotocopiado, preparación de documentos y otras actividades especializadas de apoyo a oficina", "tarifa": 6.0, "obs": ""}, {"ciiu": "8220", "desc": "Actividades de centros de llamadas (Call center)", "tarifa": 6.0, "obs": ""}, {"ciiu": "8292", "desc": "Actividades de envase y empaque", "tarifa": 6.0, "obs": ""}, {"ciiu": "8299", "desc": "Otras actividades de servicio de apoyo a las empresas n.c.p.", "tarifa": 6.0, "obs": ""}, {"ciiu": "8511", "desc": "Educación de la primera infancia", "tarifa": 5.0, "obs": ""}, {"ciiu": "8512", "desc": "Educación preescolar", "tarifa": 5.0, "obs": ""}, {"ciiu": "8513", "desc": "Educación básica primaria", "tarifa": 5.0, "obs": ""}, {"ciiu": "8521", "desc": "Educación básica secundaria", "tarifa": 5.0, "obs": ""}, {"ciiu": "8522", "desc": "Educación media académica", "tarifa": 5.0, "obs": ""}, {"ciiu": "8523", "desc": "Educación media técnica y de formación laboral", "tarifa": 5.0, "obs": ""}, {"ciiu": "8530", "desc": "Establecimientos que combinan diferentes niveles de educación", "tarifa": 5.0, "obs": ""}, {"ciiu": "8541", "desc": "Educación técnica profesional", "tarifa": 5.0, "obs": ""}, {"ciiu": "8542", "desc": "Educación tecnológica", "tarifa": 5.0, "obs": ""}, {"ciiu": "8543", "desc": "Educación de instituciones universitarias o de escuelas tecnológicas", "tarifa": 5.0, "obs": ""}, {"ciiu": "8544", "desc": "Educación de universidades", "tarifa": 5.0, "obs": ""}, {"ciiu": "8551", "desc": "Formación académica no formal", "tarifa": 5.0, "obs": ""}, {"ciiu": "8552", "desc": "Enseñanza deportiva y recreativa", "tarifa": 5.0, "obs": ""}, {"ciiu": "8553", "desc": "Enseñanza cultural", "tarifa": 5.0, "obs": ""}, {"ciiu": "8559", "desc": "Otros tipos de educación n.c.p.", "tarifa": 5.0, "obs": ""}, {"ciiu": "8560", "desc": "Actividades de apoyo a la educación", "tarifa": 5.0, "obs": ""}, {"ciiu": "8610", "desc": "Actividades de hospitales y clínicas, con internación", "tarifa": 6.0, "obs": ""}, {"ciiu": "8621", "desc": "Actividades de la práctica médica, sin", "tarifa": 6.0, "obs": ""}, {"ciiu": "8622", "desc": "Actividades de la práctica odontológica", "tarifa": 6.0, "obs": ""}, {"ciiu": "8691", "desc": "Actividades de apoyo diagnóstico", "tarifa": 6.0, "obs": ""}, {"ciiu": "8692", "desc": "Actividades de apoyo terapéutico", "tarifa": 6.0, "obs": ""}, {"ciiu": "8699", "desc": "Otras actividades de atención de la salud humana", "tarifa": 6.0, "obs": ""}, {"ciiu": "8710", "desc": "Actividades de atención residencial medicalizada de tipo general", "tarifa": 6.0, "obs": ""}, {"ciiu": "8720", "desc": "Actividades de atención residencial, para el cuidado de pacientes con retardo mental, enfermedad mental y consumo de sustancias psicoactivas", "tarifa": 6.0, "obs": ""}, {"ciiu": "8730", "desc": "Actividades de atención en instituciones para el cuidado de personas mayores y/o discapacitadas", "tarifa": 6.0, "obs": ""}, {"ciiu": "8790", "desc": "Otras actividades de atención en instituciones con alojamiento", "tarifa": 6.0, "obs": ""}, {"ciiu": "8810", "desc": "Actividades de asistencia social sin alojamiento", "tarifa": 6.0, "obs": ""}, {"ciiu": "8890", "desc": "Otras actividades de asistencia social sin alojamiento", "tarifa": 6.0, "obs": ""}, {"ciiu": "9006", "desc": "Actividades teatrales", "tarifa": 5.0, "obs": ""}, {"ciiu": "9008", "desc": "Otras actividades de espectáculos en vivo", "tarifa": 5.0, "obs": ""}, {"ciiu": "9103", "desc": "Actividades de jardines botánicos, zoológicos y reservas naturales", "tarifa": 2.0, "obs": ""}, {"ciiu": "9200", "desc": "Actividades de juegos de azar y apuestas", "tarifa": 10.0, "obs": ""}, {"ciiu": "9311", "desc": "Gestión de instalaciones deportivas", "tarifa": 2.0, "obs": ""}, {"ciiu": "9312", "desc": "Actividades de clubes deportivos", "tarifa": 2.0, "obs": ""}, {"ciiu": "9319", "desc": "Otras actividades deportivas", "tarifa": 2.0, "obs": ""}, {"ciiu": "9321", "desc": "Actividades de parques de atracciones y parques temáticos", "tarifa": 2.0, "obs": ""}, {"ciiu": "9329", "desc": "Otras actividades recreativas y de esparcimiento n.c.p.", "tarifa": 2.0, "obs": ""}, {"ciiu": "9511", "desc": "Mantenimiento y reparación de computadores y de equipo periférico", "tarifa": 6.0, "obs": ""}, {"ciiu": "9512", "desc": "Mantenimiento y reparación de equipos de comunicación", "tarifa": 6.0, "obs": ""}, {"ciiu": "9521", "desc": "Mantenimiento y reparación de aparatos electrónicos de consumo", "tarifa": 6.0, "obs": ""}, {"ciiu": "9522", "desc": "Mantenimiento y reparación de aparatos y equipos domésticos y de jardinería", "tarifa": 6.0, "obs": ""}, {"ciiu": "9523", "desc": "Reparación de calzado y artículos de cuero", "tarifa": null, "obs": "El Acuerdo no trae tarifa; digitarla"}, {"ciiu": "9529", "desc": "Mantenimiento y reparación de otros efectos personales y enseres domésticos", "tarifa": 6.0, "obs": ""}, {"ciiu": "9601", "desc": "Lavado y limpieza, incluso la limpieza en seco, de productos textiles y de piel", "tarifa": 6.0, "obs": ""}, {"ciiu": "9602", "desc": "Peluquería y otros tratamientos de belleza", "tarifa": 4.0, "obs": ""}, {"ciiu": "9603", "desc": "Pompas fúnebres y actividades relacionadas", "tarifa": 6.0, "obs": ""}, {"ciiu": "9609", "desc": "Otras actividades de servicios personales n.c.p.", "tarifa": 6.0, "obs": ""}]};
+</script>
+<script>
+/* ===== MOTOR DE CÁLCULO DE RETENCIONES — Municipio de Mistrató =====
+   Función pura: calcular(input, P) -> resultado. No toca la hoja ni el DOM.
+   P = { config:{}, regimenes:{codigo:{}}, tipos:{codigo:{}}, conceptos:{codigo:{}} }
+*/
+var MOTOR = (function () {
+  var ORDEN = ['RF', 'RETEIVA', 'ANCIANO', 'CULTURA', 'DEPORTE', 'FAMILIAR', 'FONDO_SEG', 'ICA', 'TIMBRE'];
+
+  function num(v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; }
+  function si(v) { return String(v || '').trim().toUpperCase() === 'SI'; }
+  function r0(v) { return Math.round(v); }
+
+  function pctTxt(t) { return (Math.round(t * 10000) / 100) + '%'; }
+  function milTxt(t) { return t + ' x 1.000'; }
+
+  function calcular(inp, P) {
+    var cfg = P.config, tipo = P.tipos[inp.tipoCodigo], reg = P.regimenes[inp.regimen];
+    if (!tipo) throw new Error('Tipo de contrato no encontrado: ' + inp.tipoCodigo);
+    if (!reg) throw new Error('Régimen no encontrado: ' + inp.regimen);
+
+    var esPN = inp.tipoPersona === 'PN';
+    var base = r0(num(inp.valorAntesIVA));
+    var esAnticipo = !!inp.esAnticipo;
+    var iva = esAnticipo ? 0 : r0(num(inp.iva));
+    var amort = esAnticipo ? 0 : r0(num(inp.amortizacion));
+    var UVT = num(cfg.UVT), SMLMV = num(cfg.SMLMV);
+    var anticipoAplican = String(cfg.ANTICIPO_APLICAN || '').toUpperCase().split(',').map(function (s) { return s.trim(); });
+    var overrides = inp.overrides || {};   // {CODIGO: tarifa decimal (ICA: x mil)}
+    var forzar = inp.forzar || {};         // {CODIGO: 'SI'|'NO'}
+    var lineas = [], avisos = [];
+
+    function linea(cod, aplica, baseL, tarifa, motivo, tipoTarifa) {
+      var c = P.conceptos[cod] || { NOMBRE: cod, NORMA: '' };
+      var editado = false;
+      if (overrides[cod] !== undefined && overrides[cod] !== null && overrides[cod] !== '') {
+        tarifa = num(overrides[cod]); editado = true; aplica = tarifa > 0 || aplica;
+      }
+      if (forzar[cod] === 'SI') {
+        aplica = true; editado = true; motivo = 'Incluido manualmente';
+        var DEF = { ANCIANO: 0.04, CULTURA: 0.015, DEPORTE: 0.02, FAMILIAR: 0.02, FONDO_SEG: 0.05, RETEIVA: num(cfg.RETEIVA_TARIFA), ICA: 10, RF: 0.025, TIMBRE: 0 };
+        if (!(tarifa > 0) && DEF[cod] > 0 && overrides[cod] === undefined) { tarifa = DEF[cod]; motivo += ' (tarifa por defecto, edítala si es otra)'; }
+      }
+      if (forzar[cod] === 'NO') { aplica = false; editado = true; motivo = 'Excluido manualmente'; }
+      var valor = 0;
+      if (aplica) valor = tipoTarifa === 'MIL' ? r0(baseL * tarifa / 1000) : r0(baseL * tarifa);
+      lineas.push({
+        codigo: cod, nombre: c.NOMBRE, norma: c.NORMA, aplica: aplica, base: aplica ? baseL : 0,
+        tarifa: tarifa, tarifaTxt: tipoTarifa === 'MIL' ? milTxt(tarifa) : (tipoTarifa === 'MANUAL' ? 'tabla' : pctTxt(tarifa)),
+        valor: valor, motivo: motivo || '', editado: editado, tipoTarifa: tipoTarifa
+      });
+    }
+
+    // ---------- RETEFUENTE ----------
+    (function () {
+      var modo = String(tipo.RF_MODO || 'NINGUNA').toUpperCase();
+      if (modo === 'NINGUNA') return linea('RF', false, base, 0, 'No aplica para ' + tipo.NOMBRE, 'PCT');
+      if (!si(reg.APLICA_RF)) return linea('RF', false, base, 0, reg.NOMBRE + ': no se practica retefuente', 'PCT');
+      if (esAnticipo) return linea('RF', false, base, 0, 'Anticipo: no constituye ingreso, se retiene al amortizar', 'PCT');
+      if (modo === 'TABLA383') {
+        var v = r0(num(inp.rf383Valor));
+        var c = P.conceptos.RF;
+        lineas.push({ codigo: 'RF', nombre: c.NOMBRE, norma: 'E.T. art. 383 (tabla de empleados)', aplica: true, base: base, tarifa: base ? v / base : 0,
+          tarifaTxt: 'Tabla art. 383', valor: v, motivo: v > 0 ? (inp.rf383Manual ? 'Valor digitado manualmente' : 'Tabla art. 383: base depurada (aportes, 25 % exento) según Dec. 1625 art. 1.2.4.1.6') : 'Base gravable inferior a 95 UVT: retención 0 (tabla art. 383)', editado: false, tipoTarifa: 'MANUAL' });
+        return;
+      }
+      var tarifa = esPN ? (inp.declarante ? num(tipo.RF_PN_DECL) : num(tipo.RF_PN_NODECL)) : num(tipo.RF_PJ);
+      var esHonor = /^(Honorarios|Consultor)/i.test(String(tipo.RF_CONCEPTO || ''));
+      var sube11 = false;
+      if (esPN && esHonor && num(inp.contratoTotal) > 3300 * UVT && num(tipo.RF_PJ) > tarifa) { tarifa = num(tipo.RF_PJ); sube11 = true; }
+      var minUVT = num(tipo.RF_BASE_MIN_UVT), minPesos = minUVT * UVT;
+      if (minUVT > 0 && base < minPesos)
+        return linea('RF', false, base, tarifa, (tipo.RF_CONCEPTO ? 'Concepto: ' + tipo.RF_CONCEPTO + ' · ' : '') + 'Base $' + fmt(base) + ' inferior a la mínima de ' + minUVT + ' UVT ($' + fmt(minPesos) + ')', 'PCT');
+      var motivo = (tipo.RF_CONCEPTO ? 'Concepto: ' + tipo.RF_CONCEPTO + ' · ' : '') + (esPN ? (inp.declarante ? 'PN declarante' : 'PN no declarante') : 'Persona jurídica') + (sube11 ? ' · contrato superior a 3.300 UVT ($' + fmt(3300 * UVT) + '): tarifa del 11 % (Dec. 1625 art. 1.2.4.3.1)' : '');
+      linea('RF', tarifa > 0, base, tarifa, motivo, 'PCT');
+      if (tipo.RF_CONCEPTO) lineas[lineas.length - 1].nombre += ' · ' + tipo.RF_CONCEPTO;
+    })();
+
+    // ---------- RETE IVA ----------
+    (function () {
+      if (!si(tipo.RETEIVA)) return linea('RETEIVA', false, iva, 0, 'No aplica para ' + tipo.NOMBRE, 'PCT');
+      if (!si(reg.APLICA_RETEIVA)) return linea('RETEIVA', false, iva, 0, reg.NOMBRE + ': no aplica Rete IVA', 'PCT');
+      if (!inp.responsableIVA) return linea('RETEIVA', false, iva, 0, 'Contratista NO responsable de IVA', 'PCT');
+      if (esAnticipo) return linea('RETEIVA', false, 0, 0, 'Anticipo: no se factura IVA', 'PCT');
+      if (iva <= 0) return linea('RETEIVA', false, 0, num(cfg.RETEIVA_TARIFA), 'La factura no trae IVA (bien o servicio excluido o exento)', 'PCT');
+      linea('RETEIVA', true, iva, num(cfg.RETEIVA_TARIFA), 'Sobre el IVA facturado', 'PCT');
+    })();
+
+    // ---------- ESTAMPILLAS Y TASA ----------
+    function estampilla(cod, tarifa, extraNo) {
+      if (!(tarifa > 0)) return linea(cod, false, base, 0, 'No aplica para ' + tipo.NOMBRE, 'PCT');
+      if (extraNo) return linea(cod, false, base, tarifa, extraNo, 'PCT');
+      if (esAnticipo && anticipoAplican.indexOf(cod) < 0) return linea(cod, false, base, tarifa, 'Anticipo: se retiene en los pagos que lo amortizan', 'PCT');
+      linea(cod, true, base, tarifa, '', 'PCT');
+    }
+    estampilla('ANCIANO', num(tipo.ANCIANO));
+    estampilla('CULTURA', num(tipo.CULTURA));
+    estampilla('DEPORTE', num(tipo.DEPORTE), (esPN && si(tipo.DEPORTE_EXCLUYE_PN)) ? 'Excluida: contrato de prestación de servicios con persona natural (Acuerdo 023/2025 art. 183)' : '');
+    (function () {
+      var tope = num(cfg.FAMILIAR_TOPE_SMLMV) * SMLMV, no = '';
+      if (esPN && si(tipo.FAMILIAR_TOPE_PN)) {
+        var vm = num(inp.valorMensual);
+        if (vm < tope) no = 'Exenta: honorarios mensuales ($' + fmt(vm) + ') inferiores a ' + num(cfg.FAMILIAR_TOPE_SMLMV) + ' SMLMV ($' + fmt(tope) + ') - art. 173';
+      }
+      estampilla('FAMILIAR', num(tipo.FAMILIAR), no);
+    })();
+    estampilla('FONDO_SEG', num(tipo.FONDO_SEG));
+
+    // ---------- RETE ICA ----------
+    (function () {
+      var modo = String(tipo.ICA_MODO || 'NO').toUpperCase();
+      if (modo === 'NO') return linea('ICA', false, base, 0, 'No aplica para ' + tipo.NOMBRE, 'MIL');
+      if (!si(reg.APLICA_RETEICA)) return linea('ICA', false, base, 0, reg.NOMBRE + ': no se practica ReteICA (art. 87)', 'MIL');
+      if (inp.exentoICA) return linea('ICA', false, base, 0, 'Contratista con exención, autorretenedor ICA o régimen simplificado acreditado (art. 87)', 'MIL');
+      if (inp.actividadEnMistrato === false) return linea('ICA', false, base, 0, 'Actividad no ejecutada en jurisdicción de Mistrató (art. 75 territorialidad)', 'MIL');
+      if (esAnticipo && anticipoAplican.indexOf('ICA') < 0) return linea('ICA', false, base, 0, 'Anticipo: se retiene en los pagos que lo amortizan', 'MIL');
+      var t = (inp.icaTarifaXmil !== undefined && inp.icaTarifaXmil !== null && inp.icaTarifaXmil !== '') ? num(inp.icaTarifaXmil) : num(tipo.ICA_TARIFA_X_MIL);
+      var motivo = modo === 'CIIU' ? ('CIIU ' + (inp.icaCiiu || 's/d') + (inp.icaAprobado ? ' (aprobada)' : '')) : 'Tarifa fija del tipo de contrato';
+      if (modo === 'CIIU' && inp.icaAprobado && t <= 0) motivo = 'Actividad no sujeta a ICA o tarifa 0 aprobada (' + (inp.icaCiiu || '') + ')';
+      if (inp.icaEditada) motivo += ' - tarifa editada manualmente';
+      linea('ICA', t > 0, base, t, motivo, 'MIL');
+      if (inp.icaEditada) lineas[lineas.length - 1].editado = true;
+    })();
+
+    // ---------- TIMBRE ----------
+    linea('TIMBRE', num(tipo.TIMBRE) > 0, base, num(tipo.TIMBRE), num(tipo.TIMBRE) > 0 ? '' : 'Tarifa 0% desde 2026', 'PCT');
+
+    // ---------- SEGUIMIENTO (interadministrativos) ----------
+    var seguimiento = [];
+    var segTxt = String(tipo.SEGUIMIENTO_EJECUTOR || '');
+    if (segTxt) {
+      segTxt.split(';').forEach(function (p) {
+        var m = p.trim().match(/^([A-Z_]+)\s+([\d.,]+)\s*%$/i);
+        if (m) { var t = num(m[2].replace(',', '.')) / 100; seguimiento.push({ codigo: m[1].toUpperCase(), tarifa: t, valor: r0(base * t), nota: p.trim() }); }
+        else seguimiento.push({ codigo: p.trim().split(' ')[0].toUpperCase(), tarifa: null, valor: null, nota: p.trim() });
+      });
+    }
+
+    var total = 0, editado = false;
+    lineas.forEach(function (l) { total += l.valor; if (l.editado) editado = true; });
+    var neto = base + iva - amort - total;
+    if (esPN && inp.regimen === 'ORD_PN' && inp.responsableIVA && inp.tipoCodigo === 'CPS_383') avisos.push('Un contratista del art. 383 NO puede ser responsable de IVA. Revisar.');
+    if (inp.tipoPersona === 'PJ' && inp.regimen === 'ORD_PN') avisos.push('Régimen ORD_PN con persona jurídica: inconsistente.');
+    if (neto < 0) avisos.push('El neto a pagar es negativo: revisar amortización.');
+
+    return { base: base, iva: iva, total: base + iva, amortizacion: amort, lineas: lineas, totalRetenciones: total, neto: neto,
+      seguimiento: seguimiento, editado: editado, avisos: avisos, orden: ORDEN };
+  }
+
+  function fmt(n) { n = Math.round(num(n)); return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+  return { calcular: calcular, fmt: fmt, ORDEN: ORDEN };
+})();
+if (typeof module !== 'undefined') module.exports = MOTOR;
+
+</script>
+<script>
+var ST = { persona: '', regimen: '', iva: null, decl: null, exICA: 0, cat: 'CONTRATO', tipo: '', ant: 0, terr: 1,
+  icaCiiu: '', tieneIva: null, ivaRows: [], ap_auto: false, rf383calc: 0, icaTarSug: null, icaTar: null, icaAprob: false, icaEdit: false, overrides: {}, forzar: {}, res: null };
+function $(id) { return document.getElementById(id); }
+function fmt(n) { return MOTOR.fmt(n); }
+function money(s) { s = String(s || '').replace(/\s|\$/g, ''); if (!s) return 0; s = s.replace(/\./g, '').replace(',', '.'); var n = parseFloat(s); return isNaN(n) ? 0 : n; }
+function fmtMoney(n) { n = +n || 0; var neg = n < 0; n = Math.abs(n); var ent = Math.floor(n), dec = Math.round((n - ent) * 100); var s = ent.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); if (dec) s += ',' + (dec < 10 ? '0' : '') + dec; return (neg ? '-' : '') + s; }
+function attachMoney(inp) {
+  inp.addEventListener('input', function () {
+    var raw = inp.value.replace(/[^\d,]/g, ''); var parts = raw.split(','); var ent = parts[0].replace(/^0+(?=\d)/, ''); var dec = parts.length > 1 ? parts[1].slice(0, 2) : null;
+    var s = ent.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); if (dec !== null) s += ',' + dec; inp.value = s;
+  });
+  inp.addEventListener('blur', function () { var v = money(inp.value); inp.value = v ? fmtMoney(v) : ''; });
+}
+document.querySelectorAll('input.money').forEach(attachMoney);
+function toast(m, ms) { var t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(function () { t.style.display = 'none'; }, ms || 2600); }
+function seg(id, val) { $(id).querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', String(b.dataset.v) === String(val)); }); }
+function bindSeg(id, fn) { $(id).querySelectorAll('button').forEach(function (b) { b.onclick = function () { seg(id, b.dataset.v); fn(b.dataset.v); }; }); }
+function pct(v) { v = parseFloat(v) || 0; return (Math.round(v * 10000) / 100) + '%'; }
+
+// ---- init
+$('hdrVig').textContent = P.config.VIGENCIA; $('ftUvt').textContent = '$' + fmt(P.config.UVT); $('ftSmlmv').textContent = '$' + fmt(P.config.SMLMV);
+P.ciiu.forEach(function (c) { c.q = String(c.ciiu + ' ' + c.desc).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); });
+
+// ---- tema claro / oscuro
+function setTema(m, guardar) { document.documentElement.setAttribute('data-theme', m); seg('segTema', m); if (guardar) { try { localStorage.setItem('liq_tema', m); } catch (e) {} } }
+bindSeg('segTema', function (v) { setTema(v, true); });
+(function () { var m = 'dark'; try { m = localStorage.getItem('liq_tema') || 'dark'; } catch (e) {} setTema(m, false); })();
+
+// ---- modo instructivo
+function setModo(m, guardar) {
+  document.body.classList.toggle('sin', m === 'sin'); seg('segModo', m);
+  document.querySelectorAll('details.help:not(.keep)').forEach(function (d) { d.open = m === 'con'; });
+  if (guardar) { try { localStorage.setItem('liq_modo', m); } catch (e) {} }
+}
+bindSeg('segModo', function (v) { setModo(v, true); });
+(function () { var m = 'con'; try { m = localStorage.getItem('liq_modo') || 'con'; } catch (e) {} setModo(m, false); })();
+
+// ---- paso 0
+bindSeg('segPersona', function (v) { ST.persona = v; renderRegimenes(); toggleDecl(); });
+bindSeg('segIVA', function (v) { ST.iva = +v; });
+bindSeg('segDecl', function (v) { ST.decl = +v; });
+bindSeg('segExICA', function (v) { ST.exICA = +v; }); seg('segExICA', 0);
+$('regimen').onchange = function () { ST.regimen = this.value; var r = P.regimenes[ST.regimen]; $('regNota').textContent = r ? r.NOTA : ''; toggleDecl(); };
+function renderRegimenes() {
+  var s = $('regimen'), cur = s.value; s.innerHTML = '<option value="">— selecciona —</option>';
+  Object.keys(P.regimenes).forEach(function (k) { var r = P.regimenes[k]; if (ST.persona && r.TIPO_PERSONA !== 'AMBOS' && r.TIPO_PERSONA !== ST.persona) return; var o = document.createElement('option'); o.value = k; o.textContent = r.NOMBRE; s.appendChild(o); });
+  s.value = cur; if (s.value !== cur) { ST.regimen = ''; $('regNota').textContent = ''; }
+}
+function toggleDecl() { $('wDecl').hidden = !(ST.persona === 'PN' && ST.regimen === 'ORD_PN'); }
+renderRegimenes();
+
+// ---- paso 1: elegir tipo en lenguaje normal
+var GRUPOS = [
+  { id: 'SERV', nombre: 'Servicios', ej: 'alguien hace un trabajo o presta un servicio', tipos: ['CPS_PROF', 'CPS_383', 'CPS_OTROS', 'CONSULTORIA', 'INTERVENTORIA', 'MANTENIMIENTO', 'TRANSPORTE', 'RESTAURANTE'] },
+  { id: 'COMP', nombre: 'Compras y suministros', ej: 'bienes, insumos, materiales, combustible', tipos: ['SUMINISTROS', 'SUMINISTROS_AGRO', 'COMBUSTIBLE'] },
+  { id: 'OBRA', nombre: 'Obra', ej: 'construcción o intervención física', tipos: ['OBRA'] },
+  { id: 'ARR', nombre: 'Arrendamientos', ej: 'alquiler de inmuebles, maquinaria o equipos', tipos: ['ARR_INMUEBLES', 'ARR_VEHICULOS', 'ARR_MUEBLES'] },
+  { id: 'CONV', nombre: 'Convenios y otros', ej: 'JAC, entidades públicas, ESAL, sentencias, créditos', tipos: ['CONV_COMUNALES', 'CONV_COMUNALES_OBRAS', 'CONV_ENTE_OBRAS', 'CONV_COFINANCIACION', 'CONV_EDUCATIVO', 'CONV_ASOCIACION', 'INTERADMIN_DESC', 'INTERADMIN_OTRAS', 'INTERADMIN_IE', 'LIGAS', 'SENTENCIAS', 'EMPRESTITO', 'PRESTAMO_VIVIENDA'] }
+];
+var EJ = {
+  CPS_PROF: ['Servicios profesionales / honorarios (tarifa fija)', 'Abogado, ingeniero, contador, psicólogo, profesional que cobra honorarios y no aplica a la tabla 383 (empresa, o PN con 2 o más trabajadores, o sin manifestación).', 'abogado ingeniero contador psicologo arquitecto profesional honorarios apoyo gestion asesor juridico medico enfermera trabajador social'],
+  CPS_383: ['Servicios de persona natural con tabla art. 383', 'Persona natural que presta el servicio ella misma, con pagos mensuales y seguridad social, y que manifestó por escrito que no tiene 2 o más trabajadores (art. 383 par. 2).', 'mensual mensualizado tabla 383 seguridad social procedimiento empleado rentas de trabajo manifestacion trabajadores'],
+  CPS_OTROS: ['Servicios no profesionales (tarifa fija)', 'Logística de eventos, auxiliares, aseo, vigilancia, apoyo técnico o asistencial sin título profesional, publicidad, capacitaciones.', 'logistica evento auxiliar aseo vigilancia tecnico asistencial publicidad capacitacion taller fotocopias impresion digitacion conductor operario'],
+  CONSULTORIA: ['Consultoría', 'Estudios, diseños, diagnósticos, planes, asesorías especializadas (Ley 80 art. 32 num. 2).', 'consultoria estudio diseño diagnostico plan asesoria especializada pot catastro avaluo'],
+  INTERVENTORIA: ['Interventoría y supervisión', 'Interventoría o supervisión externa de una obra o de otro contrato.', 'interventoria supervision'],
+  MANTENIMIENTO: ['Mantenimiento', 'Reparación o mantenimiento de equipos, vehículos, aires, redes, edificios, sin ser obra nueva.', 'mantenimiento reparacion arreglo vehiculo aire acondicionado computador equipo red electrica pintura'],
+  TRANSPORTE: ['Transporte', 'Transporte escolar, de pasajeros, de carga, acarreos, fletes.', 'transporte escolar pasajeros carga acarreo flete bus buseta camion'],
+  RESTAURANTE: ['Alimentación, restaurante, cafetería', 'Refrigerios, almuerzos, desayunos, alimentación de eventos y reuniones.', 'refrigerio almuerzo desayuno alimentacion restaurante cafeteria comida catering'],
+  SUMINISTROS: ['Suministros y compras', 'Papelería, equipos, dotación, materiales, insumos, medicamentos, elementos de ferretería.', 'papeleria equipo dotacion material insumo medicamento ferreteria compra suministro computador mobiliario uniforme kit herramienta'],
+  SUMINISTROS_AGRO: ['Productos agropecuarios sin procesar', 'Ganado en pie, semovientes, pollos, plátano, café pergamino, frutas, verduras, semillas, abonos: compras a productores o comerciantes sin transformación industrial.', 'ganado semoviente vaca novillo toro cerdo pollo gallina plátano platano cafe pergamino fruta verdura semilla abono agropecuario agricola pecuario leche huevo'],
+  COMBUSTIBLE: ['Combustible', 'Gasolina, ACPM, lubricantes para el parque automotor y maquinaria.', 'combustible gasolina acpm diesel lubricante aceite'],
+  OBRA: ['Obra pública', 'Construcción, pavimentación, placa huella, acueductos, alcantarillados, mejoramientos de vivienda, adecuaciones.', 'obra construccion pavimento placa huella acueducto alcantarillado vivienda adecuacion puente muro mejoramiento via'],
+  ARR_INMUEBLES: ['Arrendamiento de inmuebles', 'Alquiler de local, bodega, casa, oficina, lote.', 'arrendamiento alquiler local bodega casa oficina lote inmueble'],
+  ARR_VEHICULOS: ['Arrendamiento de vehículos y maquinaria', 'Alquiler de volqueta, retroexcavadora, motoniveladora, camioneta, maquinaria amarilla.', 'alquiler volqueta retroexcavadora motoniveladora camioneta maquinaria amarilla vehiculo'],
+  ARR_MUEBLES: ['Arrendamiento de equipos', 'Alquiler de impresoras, computadores, carpas, sonido, tarimas, sillas.', 'alquiler impresora fotocopiadora computador carpa sonido tarima silla equipo'],
+  CONV_COMUNALES: ['Convenio con JAC u organismo comunal', 'Convenio solidario o contrato con junta de acción comunal o asocomunal que NO es obra.', 'junta accion comunal jac asocomunal convenio solidario comunal'],
+  CONV_COMUNALES_OBRAS: ['Convenio con JAC para obras', 'Junta de acción comunal que ejecuta una obra (placa huella, caseta, mejoramiento).', 'junta accion comunal jac obra placa huella caseta comunal'],
+  CONV_ENTE_OBRAS: ['Convenio con otra entidad para obras', 'Entidad no comunal (fundación, corporación, empresa) que ejecuta una obra por convenio.', 'convenio obra fundacion corporacion'],
+  CONV_COFINANCIACION: ['Convenio de cofinanciación', 'El municipio aporta recursos a un proyecto con otra entidad pública u oficial.', 'cofinanciacion aporte proyecto entidad publica'],
+  CONV_EDUCATIVO: ['Convenio de servicios educativos', 'Convenio con entidad educativa privada o no pública para prestar servicios educativos.', 'educativo educacion colegio universidad sena privado'],
+  CONV_ASOCIACION: ['Convenio de asociación con ESAL', 'Convenio con fundación, corporación o asociación sin ánimo de lucro (Decreto 092 de 2017).', 'asociacion esal fundacion corporacion sin animo de lucro decreto 092'],
+  INTERADMIN_DESC: ['Interadministrativo con entidad municipal', 'Convenio o contrato con la ESP, EMVIAS, el Hospital u otra descentralizada del municipio.', 'esp emvias hospital descentralizada municipal interadministrativo'],
+  INTERADMIN_OTRAS: ['Interadministrativo con Gobernación, Nación u otros', 'Convenio con la Gobernación de Risaralda, ministerios, entidades nacionales o departamentales.', 'gobernacion risaralda ministerio nacion departamento interadministrativo'],
+  INTERADMIN_IE: ['Interadministrativo con institución educativa pública', 'Convenio con colegio o institución educativa oficial.', 'institucion educativa publica colegio oficial'],
+  LIGAS: ['Liga deportiva', 'Contrato o convenio con una liga deportiva.', 'liga deportiva deporte'],
+  SENTENCIAS: ['Sentencia o conciliación', 'Pago en cumplimiento de sentencia judicial o acta de conciliación.', 'sentencia conciliacion fallo judicial tutela condena'],
+  EMPRESTITO: ['Empréstito / deuda', 'Pago de cuotas o intereses de crédito público.', 'emprestito credito deuda banco cuota interes'],
+  PRESTAMO_VIVIENDA: ['Préstamo de vivienda', 'Desembolsos o pagos de préstamos de vivienda.', 'prestamo vivienda']
+};
+var GRUPO_ON = '';
+function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function renderGrupos() {
+  var g = $('grupos'); g.innerHTML = '';
+  GRUPOS.forEach(function (gr) {
+    var d = document.createElement('button'); d.type = 'button'; d.className = 'grupo' + (GRUPO_ON === gr.id ? ' on' : '');
+    d.innerHTML = '<b>' + gr.nombre + '</b><span>' + gr.ej + '</span>';
+    d.onclick = function () { GRUPO_ON = GRUPO_ON === gr.id ? '' : gr.id; $('qTipo').value = ''; renderGrupos(); renderTipos(GRUPO_ON ? gr.tipos : []); };
+    g.appendChild(d);
+  });
+}
+function renderTipos(lista) {
+  var box = $('opts'); box.innerHTML = '';
+  if (lista && lista.length) { var nb = document.createElement('div'); nb.className = 'nosure'; nb.innerHTML = '<span>¿No estás seguro de cuál es?</span><button type="button" class="s" onclick="modoPaso1(\'guia\')">Responder preguntas</button>'; box.appendChild(nb); }
+  (lista || []).forEach(function (k) {
+    var t = P.tipos[k]; if (!t) return; var e = EJ[k] || [t.NOMBRE, '', ''];
+    var d = document.createElement('div'); d.className = 'opt' + (ST.tipo === k ? ' on' : ''); d.tabIndex = 0; d.setAttribute('role', 'button');
+    var c = (typeof CUANDO !== 'undefined' && CUANDO[k]) || ['', '', ''];
+    d.innerHTML = '<b>' + e[0] + '</b><span>' + e[1] + '</span>' + (c[0] ? '<div class="cu hint"><b>Elígelo cuando:</b> ' + c[0] + (c[1] ? '<br><b>No es esto si:</b> ' + c[1] : '') + (c[2] ? '<br><b>Qué dice la minuta:</b> ' + c[2] : '') + '</div>' : '');
+    d.onclick = function () { elegirTipo(k); renderTipos(lista); };
+    d.onkeydown = function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); d.onclick(); } };
+    box.appendChild(d);
+  });
+}
+function elegirTipo(k) {
+  ST.tipo = k; var t = P.tipos[k], e = EJ[k] || [t.NOMBRE, '', ''];
+  var s = $('selTipo'); s.hidden = false;
+  s.innerHTML = '<div>Seleccionado: <b>' + e[0] + '</b> <span class="muted">(' + t.NOMBRE + ')</span></div>' +
+    '<details class="help keep"><summary>Ver qué retenciones trae este tipo</summary>' + resumenTipo(t) + (t.NOTAS ? '<br><br>' + t.NOTAS : '') + '</details>';
+}
+$('qTipo').oninput = function () {
+  var q = norm(this.value).trim(); GRUPO_ON = ''; renderGrupos();
+  $('grupos').hidden = q.length >= 2;
+  if (q.length < 2) { renderTipos([]); return; }
+  var terms = q.split(/\s+/);
+  function score(k) { var txt = norm(EJ[k].join(' ') + ' ' + P.tipos[k].NOMBRE); return terms.filter(function (w) { return txt.indexOf(w) >= 0; }).length; }
+  var hits = Object.keys(EJ).filter(function (k) { return P.tipos[k] && score(k) > 0; }).sort(function (a, b) { return score(b) - score(a); });
+  renderTipos(hits.slice(0, 8));
+  if (!hits.length) $('opts').innerHTML = '<div class="opt" style="cursor:default;color:var(--muted)">Nada coincide con "' + this.value.replace(/</g, '&lt;') + '". Elige un grupo o prueba otra palabra.</div>';
+};
+function resumenTipo(t) {
+  var a = [];
+  if (t.RF_MODO === 'TARIFA') a.push('Retefuente ' + pct(t.RF_PN_NODECL) + ' (PN no decl.) / ' + pct(t.RF_PN_DECL) + ' (PN decl.) / ' + pct(t.RF_PJ) + ' (PJ)'); else if (t.RF_MODO === 'TABLA383') a.push('Retefuente por tabla art. 383'); else a.push('Sin retefuente');
+  if (String(t.RETEIVA).toUpperCase() === 'SI') a.push('Rete IVA 15% del IVA');
+  var n = { ANCIANO: 'Adulto mayor', CULTURA: 'Pro cultura', DEPORTE: 'Pro deporte', FAMILIAR: 'Justicia familiar', FONDO_SEG: 'Fondo de seguridad' };
+  Object.keys(n).forEach(function (c) { if (+t[c] > 0) a.push(n[c] + ' ' + pct(t[c])); });
+  if (t.ICA_MODO === 'CIIU') a.push('Rete ICA según actividad CIIU'); else if (t.ICA_MODO === 'FIJA') a.push('Rete ICA ' + t.ICA_TARIFA_X_MIL + ' x mil');
+  return a.join(' · ');
+}
+renderGrupos();
+
+// ---- paso 1b: asistente guiado (árbol de preguntas) ----
+var CUANDO = {
+  CPS_383: ['Persona natural que presta el servicio ella misma (apoyo a la gestión, profesional, técnico), con pagos periódicos, que entregó la manifestación escrita de que NO tiene 2 o más trabajadores a su cargo y aporta seguridad social sobre el contrato.', 'El contratista es una empresa, o es persona natural con 2 o más empleados, o no entregó la manifestación: usa Servicios profesionales o Servicios no profesionales.'],
+  CPS_PROF: ['Servicio que exige título profesional o conocimientos especializados (abogado, ingeniero, contador, psicólogo), prestado por empresa o por persona natural que no aplica a la tabla 383.', 'Es un estudio, diseño o diagnóstico (eso es Consultoría), o es vigilancia de una obra o contrato (Interventoría).'],
+  CPS_OTROS: ['Servicios sin título profesional: logística de eventos, auxiliares, aseo, vigilancia, apoyo técnico o asistencial, publicidad, capacitaciones, fotocopiado.', 'Es mantenimiento de equipos o edificaciones, transporte o alimentación: esos tienen su propio tipo.'],
+  CONSULTORIA: ['Estudios, diseños, diagnósticos, planes (POT, catastro, avalúos), asesorías especializadas: el producto es un documento técnico (Ley 80 art. 32 num. 2).', 'Es apoyo permanente de un profesional (eso es Servicios profesionales).'],
+  INTERVENTORIA: ['Interventoría o supervisión externa de una obra o de otro contrato.', 'Es la obra misma (Obra pública).'],
+  MANTENIMIENTO: ['Reparar o mantener equipos, vehículos, aires, redes, edificaciones existentes.', 'Se construye algo nuevo o se amplía (Obra pública).'],
+  TRANSPORTE: ['Transporte escolar, de pasajeros, de carga, acarreos, fletes.', 'Se alquila el vehículo sin conductor ni servicio (Arrendamiento de vehículos).'],
+  RESTAURANTE: ['Refrigerios, almuerzos, desayunos, alimentación para eventos o programas.', 'Se compran víveres crudos para que otro los prepare (Suministros o Agropecuarios).'],
+  SUMINISTROS: ['Compra de bienes: papelería, equipos, dotación, materiales, insumos, medicamentos, ferretería.', 'Son productos del campo sin procesar (Agropecuarios) o combustible.'],
+  SUMINISTROS_AGRO: ['Ganado en pie, semovientes, pollos, plátano, café pergamino, frutas, verduras, semillas, abonos: productos del campo sin transformación industrial.', 'El producto ya fue procesado (carne empacada industrialmente, café tostado, alimentos elaborados): usa Suministros.'],
+  COMBUSTIBLE: ['Gasolina, ACPM, lubricantes para vehículos y maquinaria.', ''],
+  OBRA: ['Construcción, pavimentación, placa huella, acueductos, alcantarillados, mejoramiento de vivienda, adecuaciones: hay un contrato de obra pública.', 'Es solo mantenimiento menor sin obra civil, o es la interventoría.'],
+  ARR_INMUEBLES: ['Alquiler de local, bodega, casa, oficina, lote.', ''],
+  ARR_VEHICULOS: ['Alquiler de volqueta, retroexcavadora, motoniveladora, camioneta, maquinaria amarilla (con o sin operario).', 'Se contrata el servicio de transporte de personas o carga (Transporte).'],
+  ARR_MUEBLES: ['Alquiler de impresoras, computadores, carpas, sonido, tarimas, sillas.', ''],
+  CONV_COMUNALES: ['Convenio solidario o contrato con junta de acción comunal o asocomunal cuyo objeto NO es obra (eventos, dotación, programas).', 'La JAC ejecuta una obra: usa Convenio con JAC para obras.', 'La minuta dice "convenio solidario" o "contrato" y la otra parte es una Junta de Acción Comunal o Asocomunal (Ley 2166 de 2021, Decreto 142/2023). Objeto: eventos, dotación, programas, sin obra civil.'],
+  CONV_COMUNALES_OBRAS: ['La junta de acción comunal ejecuta una obra: placa huella, caseta, mejoramiento de vía.', '', 'La minuta dice "convenio solidario" con una JAC o Asocomunal (Ley 2166 de 2021) y el objeto es construir, mejorar o adecuar algo físico.'],
+  CONV_ENTE_OBRAS: ['Fundación, corporación o empresa (no comunal, no pública) ejecuta una obra mediante convenio.', 'Es un contrato de obra normal por licitación o mínima cuantía (Obra pública).', 'La minuta es un "convenio" (no un contrato de obra por licitación) con una fundación, corporación o empresa, y el objeto es ejecutar una obra. Suele citar el art. 355 de la Constitución o el Decreto 092/2017.'],
+  CONV_COFINANCIACION: ['El municipio aporta recursos a un proyecto con otra entidad pública (Gobernación, Nación, otro municipio).', 'La entidad pública le presta un servicio al municipio (Interadministrativo).', 'La minuta dice "convenio de cofinanciación" o "convenio interadministrativo" y en las cláusulas de aportes el municipio GIRA recursos a la otra entidad pública para un proyecto conjunto.'],
+  CONV_EDUCATIVO: ['Convenio con entidad educativa privada o no pública para prestar servicios educativos.', 'El colegio es oficial (Interadministrativo con institución educativa pública).', 'La minuta es un convenio con un colegio, universidad o entidad educativa PRIVADA (o no oficial) para prestar servicios educativos: cupos, programas, formación.'],
+  CONV_ASOCIACION: ['Convenio de asociación con fundación, corporación o asociación sin ánimo de lucro para un programa de interés público (Decreto 092 de 2017).', 'La ESAL solo vende un bien o servicio al municipio: usa el tipo de contrato normal.', 'La minuta dice "convenio de asociación" y cita el art. 355 de la Constitución, el art. 96 de la Ley 489 de 1998 o el Decreto 092 de 2017. La otra parte es una ESAL (fundación, corporación, asociación) y aporta recursos propios o en especie.'],
+  INTERADMIN_DESC: ['Convenio o contrato con la ESP, EMVIAS, el Hospital u otra entidad descentralizada del municipio.', '', 'La minuta dice "convenio interadministrativo" o "contrato interadministrativo" y la otra parte es la ESP de Mistrató, EMVIAS, el Hospital San Vicente u otra entidad creada por el municipio.'],
+  INTERADMIN_OTRAS: ['Convenio o contrato con la Gobernación de Risaralda, ministerios, entidades nacionales o departamentales.', 'El municipio aporta plata a un proyecto de ellos (Cofinanciación).', 'La minuta dice "convenio interadministrativo" o "contrato interadministrativo" y la otra parte es la Gobernación de Risaralda, un ministerio, una entidad nacional o departamental, u otro municipio. El municipio NO gira aportes a un proyecto de ellos (eso sería cofinanciación).'],
+  INTERADMIN_IE: ['Convenio con colegio o institución educativa oficial.', '', 'La minuta es un convenio interadministrativo con una institución educativa OFICIAL (colegio público del municipio o del departamento).'],
+  LIGAS: ['Contrato o convenio con una liga deportiva.', '', 'La otra parte es una liga deportiva reconocida (Ley 181 de 1995).'],
+  SENTENCIAS: ['Pago ordenado por sentencia judicial o acta de conciliación.', '', 'Hay una sentencia judicial, un fallo de tutela o un acta de conciliación aprobada que ordena el pago; no hay contrato.'],
+  EMPRESTITO: ['Pago de cuotas o intereses de un crédito público.', '', 'Es el pago de una cuota, intereses o comisiones de un crédito con un banco u otra entidad financiera (Acuerdo de empréstito).'],
+  PRESTAMO_VIVIENDA: ['Desembolsos o pagos de préstamos de vivienda.', '', 'Es un desembolso o pago asociado a un programa de préstamos de vivienda.'],
+};
+var ARBOL = {
+  inicio: { q: '¿Con quién es el contrato o convenio?', opts: [
+    { t: 'Persona natural o empresa privada', s: 'Un contratista normal: profesional, proveedor, constructor, transportador…', next: 'que' },
+    { t: 'Junta de acción comunal o asocomunal', s: 'Organismo comunal', next: 'jac' },
+    { t: 'Entidad pública', s: 'Gobernación, Nación, ministerio, hospital público, ESP, EMVIAS, colegio oficial…', next: 'publica' },
+    { t: 'Fundación, corporación o asociación sin ánimo de lucro', s: 'ESAL, ligas deportivas', next: 'esal' },
+    { t: 'No es un contrato', s: 'Sentencia, conciliación, crédito, préstamo de vivienda', next: 'otros' }
+  ] },
+  jac: { q: '¿La junta ejecuta una obra?', opts: [
+    { t: 'Sí, es una obra', s: 'Placa huella, caseta, mejoramiento de vía', tipo: 'CONV_COMUNALES_OBRAS' },
+    { t: 'No, es otro objeto', s: 'Eventos, dotación, programas sociales', tipo: 'CONV_COMUNALES' }
+  ] },
+  publica: { q: '¿Qué entidad pública es?', opts: [
+    { t: 'Descentralizada del municipio', s: 'ESP, EMVIAS, Hospital', tipo: 'INTERADMIN_DESC' },
+    { t: 'Institución educativa pública', s: 'Colegio o IE oficial', tipo: 'INTERADMIN_IE' },
+    { t: 'Gobernación, Nación, ministerio u otra entidad', s: '', next: 'publica2' }
+  ] },
+  publica2: { q: '¿El municipio aporta recursos a un proyecto de esa entidad (cofinanciación)?', opts: [
+    { t: 'Sí, es cofinanciación', s: 'El municipio pone plata para un proyecto conjunto', tipo: 'CONV_COFINANCIACION' },
+    { t: 'No, la entidad le presta un servicio o ejecuta algo para el municipio', s: 'Convenio o contrato interadministrativo', tipo: 'INTERADMIN_OTRAS' }
+  ] },
+  esal: { q: '¿Qué tipo de acuerdo es con la ESAL?', opts: [
+    { t: 'Convenio de asociación (Decreto 092 de 2017)', s: 'Programa de interés público con aportes de ambas partes', tipo: 'CONV_ASOCIACION' },
+    { t: 'Convenio para ejecutar una obra', s: '', tipo: 'CONV_ENTE_OBRAS' },
+    { t: 'Convenio de servicios educativos', s: 'Entidad educativa no pública', tipo: 'CONV_EDUCATIVO' },
+    { t: 'Es una liga deportiva', s: '', tipo: 'LIGAS' },
+    { t: 'Es un contrato normal: la ESAL vende un bien o servicio', s: 'Se trata como cualquier contratista', next: 'que' }
+  ] },
+  otros: { q: '¿Qué es el pago?', opts: [
+    { t: 'Sentencia judicial o acta de conciliación', s: '', tipo: 'SENTENCIAS' },
+    { t: 'Cuota o intereses de crédito (empréstito)', s: '', tipo: 'EMPRESTITO' },
+    { t: 'Préstamo de vivienda', s: '', tipo: 'PRESTAMO_VIVIENDA' }
+  ] },
+  que: { q: '¿Qué le está pagando el municipio?', opts: [
+    { t: 'Un servicio o trabajo', s: 'Alguien hace algo: profesional, apoyo, consultoría, mantenimiento, transporte, alimentación', next: 'serv' },
+    { t: 'Bienes o productos', s: 'Papelería, equipos, materiales, ganado, combustible…', next: 'bienes' },
+    { t: 'Una obra', s: 'Construcción o intervención física: placa huella, acueducto, vivienda, adecuaciones', tipo: 'OBRA' },
+    { t: 'Un alquiler', s: 'Inmueble, vehículo, maquinaria, equipos', next: 'arr' }
+  ] },
+  bienes: { q: '¿Qué tipo de bienes?', opts: [
+    { t: 'Productos del campo sin procesar', s: 'Ganado en pie, pollos, plátano, café pergamino, frutas, semillas, abonos', tipo: 'SUMINISTROS_AGRO' },
+    { t: 'Combustible', s: 'Gasolina, ACPM, lubricantes', tipo: 'COMBUSTIBLE' },
+    { t: 'Cualquier otro bien', s: 'Papelería, equipos, dotación, materiales, medicamentos, ferretería', tipo: 'SUMINISTROS' }
+  ] },
+  arr: { q: '¿Qué se alquila?', opts: [
+    { t: 'Un inmueble', s: 'Local, bodega, casa, oficina, lote', tipo: 'ARR_INMUEBLES' },
+    { t: 'Vehículos o maquinaria', s: 'Volqueta, retroexcavadora, camioneta, maquinaria amarilla', tipo: 'ARR_VEHICULOS' },
+    { t: 'Equipos', s: 'Impresoras, computadores, carpas, sonido, sillas', tipo: 'ARR_MUEBLES' }
+  ] },
+  serv: { q: '¿Qué clase de servicio?', opts: [
+    { t: 'Prestación de servicios de una persona natural (CPS)', s: 'Apoyo a la gestión, profesional, técnico o asistencial que trabaja él mismo', next: 'cps' },
+    { t: 'Servicio prestado por una empresa', s: 'Logística, vigilancia, aseo, publicidad, capacitaciones, profesionales por empresa', next: 'empresa' },
+    { t: 'Consultoría', s: 'Estudios, diseños, diagnósticos, planes, avalúos', tipo: 'CONSULTORIA' },
+    { t: 'Interventoría o supervisión', s: 'De una obra o de otro contrato', tipo: 'INTERVENTORIA' },
+    { t: 'Mantenimiento', s: 'Equipos, vehículos, aires, redes, edificaciones', tipo: 'MANTENIMIENTO' },
+    { t: 'Transporte', s: 'Escolar, pasajeros, carga, acarreos', tipo: 'TRANSPORTE' },
+    { t: 'Alimentación', s: 'Refrigerios, almuerzos, eventos', tipo: 'RESTAURANTE' }
+  ] },
+  cps: { q: '¿La persona natural entregó la manifestación escrita de que NO tiene 2 o más trabajadores a su cargo?', help: 'Es el requisito del art. 383 del E.T. (parágrafo 2) para retener por la tabla de rentas de trabajo. Normalmente viene con la cuenta de cobro o en la carpeta del contrato, junto con la planilla de seguridad social. Si no está, se retiene por tarifa fija (10 % honorarios, 6 % o 4 % servicios), que es lo más seguro para el municipio.', opts: [
+    { t: 'Sí, entregó la manifestación', s: 'Retención por tabla art. 383 (rentas de trabajo). Pagos mensuales con seguridad social.', tipo: 'CPS_383' },
+    { t: 'No la entregó, o tiene 2 o más trabajadores', s: 'Retención por tarifa fija según el tipo de servicio', next: 'cps2' }
+  ] },
+  cps2: { q: '¿El servicio exige título profesional?', opts: [
+    { t: 'Sí, es profesional', s: 'Abogado, ingeniero, contador, psicólogo, arquitecto… Retefuente honorarios 10 %', tipo: 'CPS_PROF' },
+    { t: 'No, es técnico, asistencial u operativo', s: 'Auxiliar, apoyo logístico, conductor, operario… Retefuente servicios 6 % / 4 %', tipo: 'CPS_OTROS' }
+  ] },
+  empresa: { q: '¿El servicio que presta la empresa es profesional o especializado?', opts: [
+    { t: 'Sí', s: 'Asesoría jurídica, contable, de ingeniería, médica… Honorarios 11 %', tipo: 'CPS_PROF' },
+    { t: 'No', s: 'Logística, vigilancia, aseo, publicidad, eventos, capacitación… Servicios 4 %', tipo: 'CPS_OTROS' }
+  ] }
+};
+var RUTA = [];
+function renderGuia(nodo) {
+  var n = ARBOL[nodo || 'inicio']; var box = $('guia'); box.innerHTML = '';
+  var bc = document.createElement('div'); bc.className = 'bc';
+  bc.innerHTML = RUTA.map(function (r) { return '<span>' + r.t + '</span>'; }).join('<i>›</i>') + (RUTA.length ? '<button type="button" class="lnk" onclick="guiaAtras()">← cambiar respuesta</button>' : '');
+  box.appendChild(bc);
+  var h = document.createElement('div'); h.className = 'gq'; h.textContent = n.q; box.appendChild(h);
+  if (n.help) { var d = document.createElement('details'); d.className = 'help'; d.open = !document.body.classList.contains('sin'); d.innerHTML = '<summary>¿Cómo lo verifico?</summary>' + n.help; box.appendChild(d); }
+  var g = document.createElement('div'); g.className = 'opts'; box.appendChild(g);
+  n.opts.forEach(function (o) {
+    var c = document.createElement('div'); c.className = 'opt'; c.tabIndex = 0; c.setAttribute('role', 'button');
+    c.innerHTML = '<b>' + o.t + '</b>' + (o.s ? '<span>' + o.s + '</span>' : '');
+    c.onclick = function () { RUTA.push({ t: o.t, nodo: nodo || 'inicio' }); if (o.tipo) { elegirTipo(o.tipo); renderGuiaFin(o.tipo); } else renderGuia(o.next); };
+    c.onkeydown = function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); c.onclick(); } };
+    g.appendChild(c);
+  });
+}
+function renderGuiaFin(k) {
+  var box = $('guia'); var bc = box.querySelector('.bc'); box.innerHTML = ''; box.appendChild(bc);
+  bc.innerHTML = RUTA.map(function (r) { return '<span>' + r.t + '</span>'; }).join('<i>›</i>') + '<button type="button" class="lnk" onclick="guiaAtras()">← cambiar respuesta</button>';
+  var e = EJ[k] || [P.tipos[k].NOMBRE, '', ''], c = CUANDO[k] || ['', ''];
+  var d = document.createElement('div'); d.className = 'gfin';
+  d.innerHTML = '<div class="gq">Tipo identificado: <b>' + e[0] + '</b></div>' + (c[0] ? '<p><b>Elígelo cuando:</b> ' + c[0] + '</p>' : '') + (c[1] ? '<p><b>No es esto si:</b> ' + c[1] + '</p>' : '') + (c[2] ? '<p><b>Qué dice la minuta:</b> ' + c[2] + '</p>' : '') + '<p class="hint">Si coincide, pulsa Siguiente. Si no, cambia la respuesta.</p>';
+  box.appendChild(d);
+}
+function guiaAtras() { var r = RUTA.pop(); ST.tipo = ''; $('selTipo').hidden = true; renderGuia(r ? r.nodo : 'inicio'); }
+function modoPaso1(m) {
+  seg('segP1', m); $('guia').hidden = m !== 'guia'; $('qTipo').hidden = m !== 'buscar'; $('grupos').hidden = m !== 'buscar'; $('opts').hidden = m !== 'buscar';
+  if (m === 'guia') { RUTA = []; renderGuia('inicio'); } else { $('qTipo').value = ''; GRUPO_ON = ''; renderGrupos(); renderTipos([]); }
+  ST.tipo = ''; $('selTipo').hidden = true;
+}
+bindSeg('segP1', modoPaso1);
+modoPaso1('guia');
+
+// ---- paso 2
+bindSeg('segAnt', function (v) { ST.ant = +v; $('wAmort').hidden = !!ST.ant; autoIVA(); }); seg('segAnt', 0);
+bindSeg('segTerr', function (v) { ST.terr = +v; }); seg('segTerr', 1);
+$('valor').addEventListener('input', function () { if (!$('wIva').hidden) renderIvaRows(); });
+bindSeg('segTieneIva', function (v) { ST.tieneIva = +v; autoIVA(); });
+function ivaPosible() { var t = P.tipos[ST.tipo]; return !!t && ST.iva === 1 && String(t.RETEIVA).toUpperCase() === 'SI' && !ST.ant; }
+function autoIVA() {
+  var t = P.tipos[ST.tipo]; if (!t) return;
+  var puede = ivaPosible();
+  $('wTieneIva').hidden = !puede;
+  if (!puede) { setIva(0); $('wIva').hidden = true; $('ivaHint').textContent = ''; return; }
+  if (ST.tieneIva === null) { seg('segTieneIva', ''); $('wIva').hidden = true; setIva(0); return; }
+  if (ST.tieneIva === 0) { $('wIva').hidden = true; setIva(0); return; }
+  $('wIva').hidden = false;
+  if (!ST.ivaRows.length) ST.ivaRows = [{ base: null, pct: +P.config.IVA_TARIFA * 100 }];
+  renderIvaRows();
+}
+function setIva(v) { $('iva').value = v; $('ivaTot').textContent = '$' + fmt(v); }
+function addIvaRow() { ST.ivaRows.push({ base: 0, pct: 5 }); renderIvaRows(); }
+function delIvaRow(i) { ST.ivaRows.splice(i, 1); if (!ST.ivaRows.length) ST.ivaRows = [{ base: null, pct: +P.config.IVA_TARIFA * 100 }]; renderIvaRows(); }
+function renderIvaRows() {
+  var box = $('ivaRows'); box.innerHTML = ''; var valor = money($('valor').value), total = 0;
+  ST.ivaRows.forEach(function (r, i) {
+    var base = (r.base === null) ? valor : r.base; var v = Math.round(base * r.pct / 100); total += v;
+    var d = document.createElement('div'); d.className = 'iva-row';
+    d.innerHTML = '<div><label class="f">Base gravada</label><input type="text" class="money" inputmode="decimal" value="' + (base ? fmtMoney(base) : '') + '" placeholder="0" aria-label="Base IVA fila ' + (i + 1) + '" data-i="' + i + '" data-k="base"></div>' +
+      '<div><label class="f">Tarifa</label><select data-i="' + i + '" data-k="pct" aria-label="Tarifa IVA fila ' + (i + 1) + '"><option value="19"' + (r.pct === 19 ? ' selected' : '') + '>19 %</option><option value="5"' + (r.pct === 5 ? ' selected' : '') + '>5 %</option><option value="0"' + (r.pct === 0 ? ' selected' : '') + '>0 % (exento)</option></select></div>' +
+      '<div><label class="f">IVA</label><div class="iva-val">$' + fmt(v) + '</div></div>' +
+      (ST.ivaRows.length > 1 ? '<button type="button" class="x" title="Quitar fila" onclick="delIvaRow(' + i + ')">×</button>' : '<span></span>');
+    box.appendChild(d);
+  });
+  box.querySelectorAll('input.money').forEach(function (inp) { attachMoney(inp); inp.addEventListener('input', function () { ST.ivaRows[+inp.dataset.i].base = money(inp.value); updateIvaTotals(); }); });
+  box.querySelectorAll('select').forEach(function (s) { s.onchange = function () { ST.ivaRows[+s.dataset.i].pct = +s.value; renderIvaRows(); }; });
+  setIva(total);
+  var sum = ST.ivaRows.reduce(function (a, r) { return a + ((r.base === null) ? valor : r.base); }, 0);
+  $('ivaHint').textContent = (ST.ivaRows.length > 1 && Math.abs(sum - valor) > 1) ? 'Ojo: las bases suman $' + fmt(sum) + ' y el valor antes de IVA es $' + fmt(valor) + '. La diferencia debe ser la parte excluida o exenta de la factura.' : 'Compara el IVA total con el de la factura; si no coincide por centavos, ajusta la base.';
+}
+function updateIvaTotals() {
+  var valor = money($('valor').value), total = 0;
+  $('ivaRows').querySelectorAll('.iva-row').forEach(function (row, i) { var r = ST.ivaRows[i]; var base = (r.base === null) ? valor : r.base; var v = Math.round(base * r.pct / 100); total += v; row.querySelector('.iva-val').textContent = '$' + fmt(v); });
+  setIva(total);
+}
+// ---- honorario mensual = valor total / plazo
+function calcMensual() {
+  var tot = money($('ctotal').value), m = parseFloat($('cmeses').value) || 0; var men = (tot > 0 && m > 0) ? Math.round(tot / m) : 0;
+  $('mensual').value = men;
+  $('mensualHint').innerHTML = men ? 'Honorario mensual: <b>$' + fmt(men) + '</b>' + (men < +P.config.FAMILIAR_TOPE_SMLMV * +P.config.SMLMV ? ' · inferior a 10 SMLMV → exento de Justicia Familiar' : ' · igual o superior a 10 SMLMV → paga Justicia Familiar') : 'Honorario mensual: —';
+  if (!$('wRf383').hidden) calc383();
+}
+$('ctotal').addEventListener('input', calcMensual); $('cmeses').addEventListener('input', calcMensual);
+// ---- calculadora art. 383
+var TABLA383 = [[0, 95, 0, 0], [95, 150, 0.19, 0], [150, 360, 0.28, 10], [360, 640, 0.33, 69], [640, 945, 0.35, 162], [945, 2300, 0.37, 268], [2300, 1e12, 0.39, 770]];
+function calc383() {
+  var UVT = +P.config.UVT, SM = +P.config.SMLMV, valor = money($('valor').value);
+  var mensualizado = +$('mensual').value || valor;
+  var ibc = Math.min(Math.max(Math.round(mensualizado * 0.4), SM), 25 * SM);
+  var espS = Math.round(ibc * 0.125), espP = Math.round(ibc * 0.16), espA = Math.round(ibc * 0.00522);
+  $('apHint').innerHTML = 'IBC esperado: 40 % del ingreso mensualizado ($' + fmt(mensualizado) + ')' + (ibc === SM ? ', mínimo 1 SMLMV' : '') + ' = <b>$' + fmt(ibc) + '</b> → salud $' + fmt(espS) + ', pensión $' + fmt(espP) + ', ARL (riesgo I) $' + fmt(espA) + '.';
+  if (!ST.ap_auto) { $('ap_salud').value = fmtMoney(espS); $('ap_pension').value = fmtMoney(espP); }
+  var aportes = money($('ap_salud').value) + money($('ap_pension').value) + money($('ap_arl').value);
+  var pagSP = money($('ap_salud').value) + money($('ap_pension').value);
+  $('apAviso').hidden = !(ST.ap_auto && pagSP > 0 && pagSP < (espS + espP) * 0.98);
+  if (!$('apAviso').hidden) $('apAviso').textContent = 'La planilla (salud + pensión $' + fmt(pagSP) + ') está por debajo de lo esperado ($' + fmt(espS + espP) + ') para un IBC de $' + fmt(ibc) + '. El supervisor debe pedir la corrección antes de autorizar el pago (Ley 1150/2007 art. 23; Ley 1955/2019 art. 244). Para la retención se resta solo lo efectivamente pagado.';
+  var sub = Math.max(0, valor - aportes);
+  var ex25 = $('ex25').checked ? Math.min(Math.round(sub * 0.25), Math.round(790 / 12 * UVT)) : 0;
+  var ded = money($('ded_otras').value);
+  var tope40 = Math.min(Math.round(sub * 0.40), Math.round(1340 / 12 * UVT));
+  var exyded = Math.min(ex25 + ded, tope40);
+  var base = Math.max(0, sub - exyded), baseUVT = base / UVT, retUVT = 0, tramo = '';
+  for (var i = 0; i < TABLA383.length; i++) { var r = TABLA383[i]; if (baseUVT > r[0] && baseUVT <= r[1]) { retUVT = (baseUVT - r[0]) * r[2] + r[3]; tramo = '>' + r[0] + ' a ' + (r[1] > 1e6 ? 'en adelante' : r[1]) + ' UVT: (' + baseUVT.toFixed(2) + ' − ' + r[0] + ') × ' + (r[2] * 100) + ' %' + (r[3] ? ' + ' + r[3] + ' UVT' : ''); break; } }
+  var ret = Math.round(retUVT * UVT / 1000) * 1000;
+  $('r383out').innerHTML = '<div class="kv"><b>Pago</b><span>$' + fmt(valor) + '</span><b>(−) Aportes obligatorios</b><span>$' + fmt(aportes) + '</span><b>Subtotal</b><span>$' + fmt(sub) + '</span>' +
+    '<b>(−) Renta exenta 25 %</b><span>$' + fmt(ex25) + ($('ex25').checked && ex25 < Math.round(sub * 0.25) ? ' (limitada a 790 UVT/12)' : '') + '</span>' + (ded ? '<b>(−) Otras deducciones</b><span>$' + fmt(ded) + '</span>' : '') +
+    (exyded < ex25 + ded ? '<b>Límite 40 % / 1.340 UVT</b><span>exentas + deducciones limitadas a $' + fmt(tope40) + '</span>' : '') +
+    '<b>Base gravable</b><span>$' + fmt(base) + ' = ' + baseUVT.toFixed(2) + ' UVT</span><b>Tramo tabla</b><span>' + (tramo || 'hasta 95 UVT: 0 %') + '</span>' +
+    '<b>Retención</b><span class="gold">' + retUVT.toFixed(2) + ' UVT ≈ <b>$' + fmt(ret) + '</b> (aproximada al mil)</span></div>';
+  if (!$('rf383manual').checked) $('rf383').value = fmtMoney(ret);
+  ST.rf383calc = ret;
+}
+['ap_salud', 'ap_pension', 'ap_arl', 'ded_otras'].forEach(function (i) { $(i).addEventListener('input', function () { if (i === 'ap_salud' || i === 'ap_pension') ST.ap_auto = true; calc383(); }); });
+$('ex25').onchange = calc383;
+$('rf383manual').onchange = function () { $('rf383').hidden = !this.checked; if (!this.checked) calc383(); };
+$('valor').addEventListener('input', function () { if (!$('wMensual').hidden && !ST.ctotalManual) { $('ctotal').value = $('valor').value; if (!$('cmeses').value) $('cmeses').value = 1; calcMensual(); } if (!$('wRf383').hidden) calc383(); });
+$('ctotal').addEventListener('input', function () { ST.ctotalManual = true; });
+function icaPosible() { var t = P.tipos[ST.tipo], r = P.regimenes[ST.regimen]; return t && t.ICA_MODO !== 'NO' && r && String(r.APLICA_RETEICA).toUpperCase() === 'SI' && !ST.exICA; }
+function prepararPaso2() {
+  var t = P.tipos[ST.tipo];
+  $('wMensual').hidden = !(String(t.PIDE_VALOR_MENSUAL).toUpperCase() === 'SI' || (ST.persona === 'PN' && String(t.FAMILIAR_TOPE_PN).toUpperCase() === 'SI'));
+  if (!$('wMensual').hidden && !$('ctotal').value) { $('ctotal').value = $('valor').value || ''; if (!$('cmeses').value) $('cmeses').value = 1; } calcMensual();
+  $('wRf383').hidden = t.RF_MODO !== 'TABLA383'; if (t.RF_MODO === 'TABLA383') calc383(); $('wTerr').hidden = !icaPosible(); autoIVA();
+}
+
+// ---- paso 3
+$('qCiiu').oninput = function () { buscarCiiu(this.value); };
+function buscarCiiu(q) {
+  q = String(q || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim(); var box = $('resCiiu'); box.innerHTML = '';
+  if (q.length < 2) return;
+  var terms = q.split(/\s+/), hits = P.ciiu.filter(function (c) { return terms.every(function (w) { return c.q.indexOf(w) >= 0; }); }).slice(0, 40);
+  if (!hits.length) { box.innerHTML = '<div style="cursor:default;display:block"><span style="color:var(--muted)">Sin resultados en la tabla del Acuerdo. Opciones:</span><div class="noti"><button type="button" class="s" onclick="icaNoSujeta()">No está gravada: producción primaria (art. 55)</button><button type="button" class="s" onclick="icaGeneral(10)">Comercio no listado: tarifa general 10‰</button><button type="button" class="s" onclick="icaGeneral(6)">Servicio no listado: 6‰ (la más común)</button></div></div>'; mostrarAprob(null); return; }
+  hits.forEach(function (c) {
+    var d = document.createElement('div'); d.className = ST.icaCiiu === c.ciiu ? 'on' : '';
+    d.innerHTML = '<span><b>' + c.ciiu + '</b> ' + c.desc + (c.obs ? '<span class="tag ed">obs</span>' : '') + '</span><span class="tar">' + (c.nosujeta ? 'no sujeta' : (c.tarifa == null ? 's/t' : c.tarifa + '‰')) + '</span>';
+    d.onclick = function () { ST.icaCiiu = c.ciiu; ST.icaTarSug = c.tarifa; ST.icaAprob = false; ST.icaEdit = false; buscarCiiu(q); mostrarAprob(c); };
+    box.appendChild(d);
+  });
+}
+function icaNoSujeta() { ST.icaCiiu = 'ART55'; ST.icaTarSug = 0; mostrarAprob({ ciiu: 'art. 55', tarifa: 0, obs: 'Actividad no sujeta a ICA (producción primaria agrícola, ganadera o avícola). Aprueba con tarifa 0.' }); }
+function icaGeneral(v) { ST.icaCiiu = v === 10 ? '4690' : 'S/D'; ST.icaTarSug = v; mostrarAprob({ ciiu: v === 10 ? '4690' : 'no listado', tarifa: v, obs: 'Código no incluido en el Acuerdo; tarifa sugerida por analogía. Verificar.' }); }
+function mostrarAprob(c) {
+  var a = $('aprob'); a.hidden = false; a.classList.remove('ok'); var t = P.tipos[ST.tipo];
+  if (c) { $('aprobTxt').textContent = 'Acuerdo 023/2025, CIIU ' + c.ciiu + (c.obs ? ' · ' + c.obs : ''); $('aprobTar').textContent = c.nosujeta ? '0' : (c.tarifa == null ? 's/t' : c.tarifa); $('icaTar').value = c.tarifa == null ? '' : c.tarifa; }
+  else if (t.ICA_MODO === 'FIJA') { $('aprobTxt').textContent = 'Tarifa fija para ' + t.NOMBRE; $('aprobTar').textContent = t.ICA_TARIFA_X_MIL; $('icaTar').value = t.ICA_TARIFA_X_MIL; ST.icaTarSug = +t.ICA_TARIFA_X_MIL; }
+  else { $('aprobTxt').textContent = 'Sin actividad: digita la tarifa (máximo 10 x mil)'; $('aprobTar').textContent = '–'; $('icaTar').value = ''; ST.icaTarSug = null; }
+  $('aprobEstado').textContent = 'Pendiente de aprobación'; $('btnCalc').disabled = true; ST.icaAprob = false;
+}
+$('icaTar').oninput = function () { ST.icaAprob = false; $('aprob').classList.remove('ok'); $('aprobEstado').textContent = 'Tarifa modificada, pendiente de aprobación'; $('btnCalc').disabled = true; };
+function aprobarICA() {
+  var v = parseFloat($('icaTar').value); if (isNaN(v) || v < 0) { toast('Digita una tarifa válida'); return; }
+  ST.icaTar = v; ST.icaAprob = true; ST.icaEdit = (ST.icaTarSug == null) || Math.abs(v - ST.icaTarSug) > 1e-9;
+  $('aprob').classList.add('ok'); $('aprobEstado').textContent = 'Aprobada' + (ST.icaEdit ? ' con edición (sugerida ' + (ST.icaTarSug == null ? 's/t' : ST.icaTarSug) + ')' : ''); $('btnCalc').disabled = false;
+}
+function prepararPaso3() {
+  var t = P.tipos[ST.tipo], r = P.regimenes[ST.regimen], motivo = '';
+  if (t.ICA_MODO === 'NO') motivo = 'Este tipo no causa Rete ICA: ' + t.NOMBRE + '.';
+  else if (String(r.APLICA_RETEICA).toUpperCase() !== 'SI') motivo = r.NOMBRE + ': no se practica Rete ICA (art. 87).';
+  else if (ST.exICA) motivo = 'Contratista exento o autorretenedor de ICA (art. 87). Debe acreditarlo.';
+  else if (!ST.terr) motivo = 'Actividad fuera de la jurisdicción de Mistrató (art. 75).';
+  else if (ST.ant) motivo = 'Anticipo: el Rete ICA se practica en los pagos que lo amortizan.';
+  $('icaNo').hidden = !motivo; $('icaNo').textContent = motivo; $('icaCiiu').hidden = !!motivo || t.ICA_MODO !== 'CIIU'; $('aprob').hidden = true; $('btnCalc').disabled = false;
+  if (motivo) return;
+  if (t.ICA_MODO === 'FIJA') mostrarAprob(null);
+  else { $('qCiiu').value = ST.icaCiiu || ''; buscarCiiu(ST.icaCiiu); var c = P.ciiu.filter(function (x) { return x.ciiu === ST.icaCiiu; })[0]; if (c) { ST.icaTarSug = c.tarifa; mostrarAprob(c); } else mostrarAprob(null); }
+}
+
+// ---- paso 4
+function input() {
+  return { tipoPersona: ST.persona, regimen: ST.regimen, responsableIVA: ST.iva === 1, declarante: ST.decl === 1, exentoICA: !!ST.exICA, actividadEnMistrato: !!ST.terr,
+    tipoCodigo: ST.tipo, valorAntesIVA: money($('valor').value), iva: +$('iva').value || 0, esAnticipo: !!ST.ant, amortizacion: money($('amort').value),
+    valorMensual: +$('mensual').value || 0, contratoTotal: money($('ctotal').value), rf383Valor: money($('rf383').value), rf383Manual: $('rf383manual').checked, icaCiiu: ST.icaCiiu, icaTarifaXmil: ST.icaAprob ? ST.icaTar : null, icaAprobado: ST.icaAprob, icaEditada: ST.icaEdit,
+    overrides: ST.overrides, forzar: ST.forzar };
+}
+function calcular() {
+  try { ST.res = MOTOR.calcular(input(), P); } catch (e) { $('avisos').innerHTML = '<div class="err">' + e.message + '</div>'; return; }
+  var r = ST.res, t = P.tipos[ST.tipo];
+    '<b>Régimen</b><span>' + P.regimenes[ST.regimen].NOMBRE + (ST.persona === 'PN' && ST.regimen === 'ORD_PN' ? (ST.decl ? ' · declarante' : ' · no declarante') : '') + (ST.iva ? ' · responsable de IVA' : ' · no responsable de IVA') + '</span>' +
+    '<b>Tipo</b><span>' + t.NOMBRE + (ST.ant ? ' · <span style="color:var(--warn)">ANTICIPO</span>' : '') + '</span>' +
+    '<b>Valor antes de IVA</b><span>$' + fmt(r.base) + '</span><b>IVA</b><span>$' + fmt(r.iva) + '</span>' + (r.amortizacion ? '<b>Amortización</b><span>$' + fmt(r.amortizacion) + '</span>' : '');
+  $('avisos').innerHTML = r.avisos.map(function (a) { return '<div class="err">' + a + '</div>'; }).join('');
+  var tb = $('tbody'); tb.innerHTML = '';
+  var aplican = r.lineas.filter(function (l) { return l.aplica; }), noAplican = r.lineas.filter(function (l) { return !l.aplica; });
+  aplican.forEach(function (l) {
+    var tr = document.createElement('tr');
+    var tarIn = l.tipoTarifa === 'MANUAL' ? l.tarifaTxt : '<input class="t" type="number" step="any" aria-label="Tarifa ' + l.nombre + '" value="' + tarVal(l) + '" onchange="editarTarifa(\'' + l.codigo + '\',this.value)"> <span class="unit">' + (l.tipoTarifa === 'MIL' ? '‰' : '%') + '</span>';
+    tr.innerHTML = '<td><label class="sw"><input type="checkbox" aria-label="Quitar ' + l.nombre + '" checked onchange="forzar(\'' + l.codigo + '\',this.checked)"></label></td>' +
+      '<td>' + l.nombre + (l.editado ? '<span class="tag ed">manual</span>' : '') + '<span class="norma">' + l.norma + '</span></td>' +
+      '<td class="num">$' + fmt(l.base) + '</td><td class="num">' + tarIn + '</td><td class="num"><b>$' + fmt(l.valor) + '</b></td><td class="motivo">' + l.motivo + '</td>';
+    tb.appendChild(tr);
+  });
+  if (!aplican.length) tb.innerHTML = '<tr><td colspan="6" class="motivo">Ningún concepto aplica a este pago.</td></tr>';
+  var nl = $('noapList'); nl.innerHTML = '';
+  $('noapSum').textContent = 'Conceptos que no aplican (' + noAplican.length + ')';
+  $('noap').hidden = !noAplican.length;
+  noAplican.forEach(function (l) {
+    var d = document.createElement('div'); d.className = 'lc off';
+    d.innerHTML = '<div class="lc-h"><label><input type="checkbox" aria-label="Incluir ' + l.nombre + '" onchange="forzar(\'' + l.codigo + '\',this.checked)"></label><div class="lc-n">' + l.nombre + (l.editado ? '<span class="tag ed">manual</span>' : '') + '<span class="norma">' + l.norma + '</span></div><div class="lc-v">No aplica</div></div>' + (l.motivo ? '<div class="lc-m">' + l.motivo + '</div>' : '');
+    nl.appendChild(d);
+  });
+  $('tTotal').textContent = '$' + fmt(r.totalRetenciones); $('tNeto').textContent = '$' + fmt(r.neto);
+  $('totales').innerHTML = '<div class="tb"><b>Total retenciones</b><span>$' + fmt(r.totalRetenciones) + '</span></div><div class="tb neto"><b>Neto a girar</b><span>$' + fmt(r.neto) + '</span></div>';
+  var cb = $('cards'); cb.innerHTML = '';
+  aplican.forEach(function (l) {
+    var d = document.createElement('div'); d.className = 'lc' + (l.aplica ? '' : ' off');
+    var tarIn = l.tipoTarifa === 'MANUAL' ? '<span>' + l.tarifaTxt + '</span>' : '<span>Tarifa <input class="t" type="number" step="any" aria-label="Tarifa ' + l.nombre + '" value="' + tarVal(l) + '" onchange="editarTarifa(\'' + l.codigo + '\',this.value)"> ' + (l.tipoTarifa === 'MIL' ? 'x mil' : '%') + '</span>';
+    d.innerHTML = '<div class="lc-h"><label><input type="checkbox" aria-label="Aplicar ' + l.nombre + '" ' + (l.aplica ? 'checked' : '') + ' onchange="forzar(\'' + l.codigo + '\',this.checked)"></label><div class="lc-n">' + l.nombre + (l.editado ? '<span class="tag ed">manual</span>' : '') + '<span class="norma">' + l.norma + '</span></div><div class="lc-v">' + (l.aplica ? '$' + fmt(l.valor) : 'No aplica') + '</div></div>' +
+      '<div class="lc-r">' + (l.aplica ? '<span>Base $' + fmt(l.base) + '</span>' : '<span></span>') + tarIn + '</div>' + (l.motivo ? '<div class="lc-m">' + l.motivo + '</div>' : '');
+    cb.appendChild(d);
+  });
+  $('segBox').hidden = !r.seguimiento.length;
+  if (r.seguimiento.length) $('segBox').innerHTML = '<b>Seguimiento al ejecutor</b> (no lo retiene Hacienda; lo recauda quien ejecuta el convenio): ' + r.seguimiento.map(function (s) { return s.nota + (s.valor != null ? ' → $' + fmt(s.valor) : ''); }).join(' · ');
+}
+function tarVal(l) { return l.tipoTarifa === 'MIL' ? l.tarifa : Math.round(l.tarifa * 10000) / 100; }
+function editarTarifa(cod, v) { if (v === '' || v === null) delete ST.overrides[cod]; else ST.overrides[cod] = cod === 'ICA' ? parseFloat(v) : parseFloat(v) / 100; calcular(); }
+function forzar(cod, on) { ST.forzar[cod] = on ? 'SI' : 'NO'; calcular(); }
+function textoResumen() {
+  var r = ST.res, t = P.tipos[ST.tipo], L = [];
+  L.push('LIQUIDACIÓN DE RETENCIONES — ' + P.config.ENTIDAD + ' — ' + new Date().toLocaleDateString('es-CO'));
+  L.push('Régimen: ' + P.regimenes[ST.regimen].NOMBRE + ' · Tipo: ' + t.NOMBRE + (ST.ant ? ' (ANTICIPO)' : ''));
+  L.push('Valor antes de IVA: $' + fmt(r.base) + ' · IVA: $' + fmt(r.iva) + (r.amortizacion ? ' · Amortización: $' + fmt(r.amortizacion) : ''));
+  L.push('');
+  r.lineas.forEach(function (l) { L.push((l.aplica ? '[x] ' : '[ ] ') + l.nombre + (l.aplica ? ': base $' + fmt(l.base) + ' × ' + l.tarifaTxt + ' = $' + fmt(l.valor) : ': no aplica (' + l.motivo + ')') + (l.editado ? ' [manual]' : '')); });
+  L.push(''); L.push('TOTAL RETENCIONES: $' + fmt(r.totalRetenciones)); L.push('NETO A GIRAR: $' + fmt(r.neto));
+  if (r.seguimiento.length) L.push('Seguimiento al ejecutor: ' + r.seguimiento.map(function (s) { return s.nota + (s.valor != null ? ' = $' + fmt(s.valor) : ''); }).join('; '));
+  return L.join('\n');
+}
+function copiar() {
+  if (!ST.res) return; var txt = textoResumen();
+  function fallback() { var ta = document.createElement('textarea'); ta.value = txt; ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Resumen copiado'); } catch (e) { toast('No se pudo copiar; selecciona el texto manualmente'); } document.body.removeChild(ta); }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { toast('Resumen copiado al portapapeles'); }, fallback); else fallback();
+}
+function nueva() { ST.tipo = ''; ST.ant = 0; ST.overrides = {}; ST.forzar = {}; ST.res = null; ST.icaAprob = false; ST.icaEdit = false; ST.icaCiiu = ''; ST.tieneIva = null; ST.ivaRows = []; ST.ap_auto = false; ST.ctotalManual = false; $('mensualHint').textContent = 'Honorario mensual: —'; ['ap_salud','ap_pension','ap_arl','ded_otras'].forEach(function (i) { $(i).value = ''; }); $('ex25').checked = true; $('rf383manual').checked = false; $('rf383').hidden = true; ['valor', 'iva', 'amort', 'mensual', 'ctotal', 'cmeses', 'rf383', 'qCiiu'].forEach(function (i) { $(i).value = ''; }); seg('segAnt', 0); $('wAmort').hidden = false; modoPaso1('guia'); go(0); }
+
+// ---- navegación
+function validar(s) {
+  if (s === 1) { if (!ST.persona) return 'Selecciona el tipo de persona.'; if (!ST.regimen) return 'Selecciona el régimen.'; if (ST.iva === null) return 'Indica si es responsable de IVA.'; if (ST.persona === 'PN' && ST.regimen === 'ORD_PN' && ST.decl === null) return 'Indica si es declarante de renta.'; }
+  if (s === 2 && !ST.tipo) return 'Selecciona el tipo de contrato o convenio.';
+  if (s === 3) { if (!(money($('valor').value) > 0)) return 'Digita el valor antes de IVA.'; if (ivaPosible() && ST.tieneIva === null) return 'Indica si la factura trae IVA.'; if (!$('wMensual').hidden && !(+$('mensual').value > 0)) return 'Digita el valor total del contrato y el plazo en meses.'; }
+  return '';
+}
+var CUR = 0;
+function go(s) {
+  if (s > CUR) for (var k = CUR + 1; k <= s; k++) { var e = validar(k); if (e) { toast(e, 3200); return; } }
+  if (s === 2) prepararPaso2(); if (s === 3) prepararPaso3(); if (s === 4) { ST.overrides = {}; ST.forzar = {}; calcular(); }
+  for (var i = 0; i < 5; i++) $('s' + i).hidden = i !== s;
+  $('steps').querySelectorAll('div').forEach(function (d) { var n = +d.dataset.s; d.className = n === s ? 'on' : (n < s ? 'done' : ''); if (n === s) $('stepNow').textContent = 'Paso ' + (s + 1) + ' de 5 · ' + d.querySelector('span').textContent; });
+  CUR = s; window.scrollTo(0, 0);
+}
+</script>
+</body></html>
