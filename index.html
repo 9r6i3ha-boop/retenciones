@@ -35,7 +35,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     --ink:#f3f2ee; --ink-2:rgba(243,242,238,.72); --ink-3:rgba(243,242,238,.56);
     --glass:rgba(255,255,255,.055); --glass-2:rgba(255,255,255,.085); --glass-3:rgba(255,255,255,.14);
     --stroke:rgba(255,255,255,.12); --stroke-2:rgba(255,255,255,.2);
-    --magenta:#ff058a; --lime:#e8ff01; --cyan:#2de0e6;
+    --magenta:#ff058a; --lime:#e8ff01; --cyan:#2de0e6; --trast:#b9a3ff;
     --ok:#9be15d; --warn:#ffc531; --bad:#ff3b5c;
     --ease:cubic-bezier(.2,.7,.1,1);
     --f-display:"Inter Tight",system-ui,"Segoe UI",Roboto,Arial,sans-serif;
@@ -103,6 +103,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   .kpi.red{background:rgba(255,59,92,.08);border-color:rgba(255,59,92,.32)}.kpi.red .val{color:var(--bad)}
   .kpi.yellow{background:rgba(255,197,49,.08);border-color:rgba(255,197,49,.3)}.kpi.yellow .val{color:var(--warn)}
   .kpi.info{background:rgba(45,224,230,.07);border-color:rgba(45,224,230,.28)}.kpi.info .val{color:var(--cyan)}
+  .kpi.tras{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.3)}.kpi.tras .val{color:var(--trast)}
   .tabs{display:flex;gap:2px;border-bottom:1px solid var(--stroke);flex-wrap:wrap}
   .tab{padding:9px 14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .3s}
   .tab:hover{color:var(--ink)}
@@ -126,10 +127,13 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   .b-dif{background:rgba(255,197,49,.14);color:var(--warn);border-color:rgba(255,197,49,.35)}
   .b-no{background:rgba(255,59,92,.14);color:var(--bad);border-color:rgba(255,59,92,.4)}
   .b-int{background:rgba(45,224,230,.14);color:var(--cyan);border-color:rgba(45,224,230,.4)}
+  .b-tras{background:rgba(167,139,250,.15);color:var(--trast);border-color:rgba(167,139,250,.42)}
   .neg{color:var(--bad)}
   tr.st-ok td{background:rgba(155,225,93,.06)}
   tr.st-int td{background:rgba(45,224,230,.06)}
   tr.st-int:hover td{background:rgba(45,224,230,.1)}
+  tr.st-tras td{background:rgba(167,139,250,.07)}
+  tr.st-tras:hover td{background:rgba(167,139,250,.12)}
   tr.st-dif td{background:rgba(255,197,49,.07)}
   tr.st-no td{background:rgba(255,59,92,.07)}
   tr.st-ok:hover td{background:rgba(155,225,93,.1)}
@@ -172,7 +176,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     --ink:#17273a; --ink-2:rgba(23,39,58,.80); --ink-3:rgba(23,39,58,.56);
     --glass:rgba(23,55,95,.035); --glass-2:rgba(23,55,95,.06); --glass-3:rgba(23,55,95,.11);
     --stroke:rgba(23,55,95,.16); --stroke-2:rgba(23,55,95,.26);
-    --ok:#1a7d3c; --warn:#9a6b00; --bad:#c0392b; --cyan:#0c7d86;
+    --ok:#1a7d3c; --warn:#9a6b00; --bad:#c0392b; --cyan:#0c7d86; --trast:#5d3fd3;
     --navy:#1f3a5f; --grey:rgba(23,39,58,.56); --line:rgba(23,55,95,.16);
     --green:rgba(26,125,60,.12); --greent:#1a7d3c; --yellow:rgba(154,107,0,.12); --yellowt:#9a6b00; --red:rgba(192,57,43,.1); --redt:#b23325;
     color-scheme:light;
@@ -191,15 +195,18 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   :root[data-theme="light"] .kpi.red{background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.3)} :root[data-theme="light"] .kpi.red .val{color:var(--bad)}
   :root[data-theme="light"] .kpi.yellow{background:rgba(154,107,0,.1);border-color:rgba(154,107,0,.3)} :root[data-theme="light"] .kpi.yellow .val{color:var(--warn)}
   :root[data-theme="light"] .kpi.info{background:rgba(12,125,134,.08);border-color:rgba(12,125,134,.3)} :root[data-theme="light"] .kpi.info .val{color:var(--cyan)}
+  :root[data-theme="light"] .kpi.tras{background:rgba(93,63,211,.08);border-color:rgba(93,63,211,.3)} :root[data-theme="light"] .kpi.tras .val{color:var(--trast)}
   :root[data-theme="light"] .tab.active{border-bottom-color:var(--magenta)}
   :root[data-theme="light"] .b-ok{background:rgba(26,125,60,.14);color:#167a39;border-color:rgba(26,125,60,.4)}
   :root[data-theme="light"] .b-dif{background:rgba(154,107,0,.14);color:#8a6000;border-color:rgba(154,107,0,.4)}
   :root[data-theme="light"] .b-no{background:rgba(192,57,43,.12);color:#b23325;border-color:rgba(192,57,43,.4)}
   :root[data-theme="light"] .b-int{background:rgba(12,125,134,.14);color:#0c7d86;border-color:rgba(12,125,134,.4)}
+  :root[data-theme="light"] .b-tras{background:rgba(93,63,211,.12);color:var(--trast);border-color:rgba(93,63,211,.4)}
   :root[data-theme="light"] tr.st-ok td{background:rgba(26,125,60,.06)}
   :root[data-theme="light"] tr.st-dif td{background:rgba(154,107,0,.07)}
   :root[data-theme="light"] tr.st-no td{background:rgba(192,57,43,.06)}
   :root[data-theme="light"] tr.st-int td{background:rgba(12,125,134,.06)}
+  :root[data-theme="light"] tr.st-tras td{background:rgba(93,63,211,.06)}
   :root[data-theme="light"] tr.done td{background:rgba(26,125,60,.08)!important;color:var(--ink-3)}
   :root[data-theme="light"] .banner{background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.3);color:#a52a1d}
   :root[data-theme="light"] .btn.ghost{background:#fff;border-color:var(--stroke);color:var(--navy)}
@@ -730,6 +737,8 @@ function cuentasEmparejan(a,b){ a=normAcct(a); b=normAcct(b); if(!a||!b) return 
   if(a===b) return true; const lo=a.length>=b.length?a:b, sh=a.length>=b.length?b:a;
   return sh.length>=4 && lo.endsWith(sh); }
 
+// Traslado interno visto desde ARIES: mismo NIT del municipio (800.031.075) o concepto que diga "TRASLADO".
+function esTrasladoSis(s){ const d=((s.concepto||'')+' '+(s.terc||'')).toUpperCase(); return normAcct(s.doc)==='800031075' || /\bTRASLADO\b/.test(d); }
 // ===== conciliación (por valor, sin límite de fecha) =====
 function conciliar(banco, sis){
   const cred=banco.filter(b=>b.valor>0 && !esTras(b)).map(b=>({...b,used:false}));
@@ -763,6 +772,9 @@ function conciliar(banco, sis){
         break;
       } } }
   for(const s of S) if(!s.estado) s.estado='SIN RESPALDO EN BANCO';
+  // Los que quedan sin respaldo pero son traslados internos (NIT municipio o "TRASLADO") se marcan aparte,
+  // en neutro, para que no se confundan con recaudo faltante. Se hace antes de los combos para no mezclarlos.
+  for(const s of S) if(s.estado==='SIN RESPALDO EN BANCO' && esTrasladoSis(s)) s.estado='TRASLADO INTERNO SISTEMA';
   const pend = cred.filter(b=>!b.used && esRecaudo(b));
   const traslados = banco.filter(b=> esTras(b));
   const otros = banco.filter(b=> !esRecaudo(b) && !esTras(b));
@@ -952,8 +964,9 @@ function verResumen(){
   const tot={sis:0,con:0,dif:0,no:0,pend:0,pval:0,int:0};
   const data=CUENTAS.map((c,i)=>{ const S=c.R.S, pend=c.R.pend;
     const con=S.filter(s=>s.estado==='CONCILIADO').length, dif=S.filter(s=>s.estado==='CONCILIADO CON DIFERENCIA').length, no=S.filter(s=>s.estado==='SIN RESPALDO EN BANCO').length;
+    const tras=S.filter(s=>s.estado==='TRASLADO INTERNO SISTEMA').length;
     const pval=pend.reduce((a,b)=>a+b.valor,0); const aldia=(pend.length===0 && no===0);
-    return {c,i,S,pend,con,dif,no,pval,aldia};
+    return {c,i,S,pend,con,dif,no,tras,pval,aldia};
   });
   data.forEach(d=>{ tot.sis+=d.S.length; tot.con+=d.con; tot.dif+=d.dif; tot.no+=d.no; tot.pend+=d.pend.length; tot.pval+=d.pval; tot.int+=d.c.interes; });
   const nAldia=data.filter(d=>d.aldia).length, nPor=data.length-nAldia;
@@ -962,8 +975,9 @@ function verResumen(){
   vis.forEach(d=>{ const c=d.c;
     const cq=c.cuadre; const noCuadra = (cq && !cq.ok) ? ' <span title="No cuadra con el extracto" style="color:var(--bad);font-family:var(--f-mono);font-size:10px">⚠ no cuadra</span>' : '';
     const estado = d.aldia ? '<span class="badge b-ok">✅ Al día</span>' : '<span class="badge b-no">⚠ Por conciliar</span>';
+    const trasTag = d.tras ? ` <span title="Traslados internos pendientes de consignar" style="color:var(--trast);font-family:var(--f-mono);font-size:10px">⇄ ${d.tras} traslado${d.tras>1?'s':''}</span>` : '';
     rows+=`<tr class="${d.aldia?'st-ok':'st-no'}" style="cursor:pointer" onclick="seleccionar(${d.i})">
-      <td>${estado}${noCuadra}</td>
+      <td>${estado}${noCuadra}${trasTag}</td>
       <td>${esc(c.banco)}</td><td><b>${esc(c.meta.cuenta)}</b></td><td>${esc(c.meta.periodo)}</td>
       <td class="num">${d.S.length}</td><td class="num">${d.con}${d.dif?'+'+d.dif:''}</td>
       <td class="num ${d.no?'neg':''}">${d.no}</td>
@@ -987,7 +1001,7 @@ function verResumen(){
       </div>
       <div class="rg-tbl">
         <div class="tblwrap"><table><thead><tr><th>Estado</th><th>Banco</th><th>Cuenta</th><th>Periodo</th><th class="num">Ing. sist.</th><th class="num">Concil.</th><th class="num">Sin resp.</th><th class="num">Sin reg.</th><th class="num">$ por causar</th><th class="num">Intereses</th></tr></thead><tbody>${rows}</tbody></table></div>
-        <p style="font-size:12px;color:var(--grey);margin-top:8px">Haz clic en una fila para ver el detalle. <b style="color:var(--ok)">Al día</b> = sin nada por causar ni sin respaldo. El ✓ verde de antes (cuadra con el extracto) solo avisa ahora si <b style="color:var(--bad)">⚠ no cuadra</b>.</p>
+        <p style="font-size:12px;color:var(--grey);margin-top:8px">Haz clic en una fila para ver el detalle. <b style="color:var(--ok)">Al día</b> = sin nada por causar ni sin respaldo. Los <b style="color:var(--trast)">⇄ traslados internos</b> (NIT 800.031.075 o concepto "TRASLADO") se marcan aparte y no cuentan como sin respaldo. El ✓ verde de antes (cuadra con el extracto) solo avisa ahora si <b style="color:var(--bad)">⚠ no cuadra</b>.</p>
       </div>
     </div>`;
 }
@@ -1006,6 +1020,7 @@ function seleccionar(i){
   const nDif=R.S.filter(s=>s.estado==='CONCILIADO CON DIFERENCIA').length;
   const nNo=R.S.filter(s=>s.estado==='SIN RESPALDO EN BANCO').length;
   const nRend=R.S.filter(s=>s.estado==='RENDIMIENTO').length;
+  const nTras=R.S.filter(s=>s.estado==='TRASLADO INTERNO SISTEMA').length;
   const totSis=R.S.reduce((a,s)=>a+s.valor,0), totPend=R.pend.reduce((a,b)=>a+b.valor,0);
   const notaFuera = CUR.fuera>0 ? ` &middot; <span style="color:var(--warn)">ARIES: ${CUR.fuera} fuera de ventana, omitidos</span>` : '';
   const c=CUR.cuadre;
@@ -1016,7 +1031,8 @@ function seleccionar(i){
     <div class="kpi green"><div class="lab">Conciliados</div><div class="val">${nCon+nDif}</div><div class="sub">${nDif?nCon+' exactos · '+nDif+' con diferencia':(nCon?'cuadran exacto':'—')}</div></div>
     <div class="kpi ${nNo?'yellow':''}"><div class="lab">Sin respaldo en banco</div><div class="val">${nNo}</div><div class="sub">causado sin consignación</div></div>
     <div class="kpi red"><div class="lab">Banco sin registrar</div><div class="val">${R.pend.length}</div><div class="sub"><span class="vm">${money(totPend)}</span> por causar</div></div>
-    <div class="kpi info"><div class="lab">Intereses del periodo</div><div class="val">${money(CUR.interes)}</div><div class="sub">${nRend?'✓ ya registrados en ARIES':'rendimientos (informativo)'}</div></div>`;
+    <div class="kpi info"><div class="lab">Intereses del periodo</div><div class="val">${money(CUR.interes)}</div><div class="sub">${nRend?'✓ ya registrados en ARIES':'rendimientos (informativo)'}</div></div>${nTras?`
+    <div class="kpi tras"><div class="lab">Traslados internos</div><div class="val">${nTras}</div><div class="sub">pendiente de consignar</div></div>`:''}`;
   const banner=document.getElementById('banner');
   if(R.pend.length){ banner.classList.add('show'); banner.innerHTML=`⚠ Hay ${R.pend.length} ingresos en el banco (${money(totPend)}) sin registrar en el sistema. Revísalos en la pestaña "Ingresos del banco sin registrar".`; }
   else banner.classList.remove('show');
@@ -1025,9 +1041,10 @@ function seleccionar(i){
   document.getElementById('cSinR').textContent=nNo;
   document.getElementById('cOtr').textContent=R.otros.length;
   document.getElementById('cTras').textContent=(R.traslados||[]).length;
-  const counts={'TODOS':R.S.length,'CONCILIADO':nCon,'CONCILIADO CON DIFERENCIA':nDif,'SIN RESPALDO EN BANCO':nNo,'RENDIMIENTO':nRend};
-  const labels={'TODOS':'Todos','CONCILIADO':'Conciliados','CONCILIADO CON DIFERENCIA':'Con diferencia','SIN RESPALDO EN BANCO':'Sin respaldo','RENDIMIENTO':'Intereses ingresados'};
+  const counts={'TODOS':R.S.length,'CONCILIADO':nCon,'CONCILIADO CON DIFERENCIA':nDif,'SIN RESPALDO EN BANCO':nNo,'TRASLADO INTERNO SISTEMA':nTras,'RENDIMIENTO':nRend};
+  const labels={'TODOS':'Todos','CONCILIADO':'Conciliados','CONCILIADO CON DIFERENCIA':'Con diferencia','SIN RESPALDO EN BANCO':'Sin respaldo','TRASLADO INTERNO SISTEMA':'Traslados internos','RENDIMIENTO':'Intereses ingresados'};
   if(!nRend){ delete counts['RENDIMIENTO']; delete labels['RENDIMIENTO']; }
+  if(!nTras){ delete counts['TRASLADO INTERNO SISTEMA']; delete labels['TRASLADO INTERNO SISTEMA']; }
   curFilter='TODOS';
   document.getElementById('filtros').innerHTML=Object.keys(labels).map(k=>`<span class="chip ${k==='TODOS'?'on':''}" data-f="${k}">${labels[k]} (${counts[k]})</span>`).join('');
   document.querySelectorAll('#filtros .chip').forEach(ch=>ch.onclick=()=>{ curFilter=ch.dataset.f; document.querySelectorAll('#filtros .chip').forEach(c=>c.classList.toggle('on',c===ch)); drawConc(); });
@@ -1109,15 +1126,15 @@ function confirmarCombo(idx){
 }
 
 // ===== tablas (idénticas) =====
-function badge(e){ const m={'CONCILIADO':['b-ok','Conciliado'],'CONCILIADO CON DIFERENCIA':['b-dif','Con diferencia'],'SIN RESPALDO EN BANCO':['b-no','Sin respaldo'],'RENDIMIENTO':['b-int','Intereses ingresados']}[e]; return m?`<span class="badge ${m[0]}">${m[1]}</span>`:''; }
+function badge(e){ const m={'CONCILIADO':['b-ok','Conciliado'],'CONCILIADO CON DIFERENCIA':['b-dif','Con diferencia'],'SIN RESPALDO EN BANCO':['b-no','Sin respaldo'],'RENDIMIENTO':['b-int','Intereses ingresados'],'TRASLADO INTERNO SISTEMA':['b-tras','Traslado interno']}[e]; return m?`<span class="badge ${m[0]}"${e==='TRASLADO INTERNO SISTEMA'?' title="Traslado interno del municipio, pendiente de consignar en el banco"':''}>${m[1]}</span>`:''; }
 function drawConc(){
-  const PRIO={'SIN RESPALDO EN BANCO':0,'CONCILIADO CON DIFERENCIA':1,'CONCILIADO':2,'RENDIMIENTO':3};
-  const CLS={'SIN RESPALDO EN BANCO':'st-no','CONCILIADO CON DIFERENCIA':'st-dif','CONCILIADO':'st-ok','RENDIMIENTO':'st-int'};
+  const PRIO={'SIN RESPALDO EN BANCO':0,'CONCILIADO CON DIFERENCIA':1,'TRASLADO INTERNO SISTEMA':2,'CONCILIADO':3,'RENDIMIENTO':4};
+  const CLS={'SIN RESPALDO EN BANCO':'st-no','CONCILIADO CON DIFERENCIA':'st-dif','TRASLADO INTERNO SISTEMA':'st-tras','CONCILIADO':'st-ok','RENDIMIENTO':'st-int'};
   const rows=MODEL.S.filter(s=>curFilter==='TODOS'||s.estado===curFilter)
     .sort((a,b)=>(PRIO[a.estado]??9)-(PRIO[b.estado]??9)||a.fecha-b.fecha||a.comp.localeCompare(b.comp));
   let h=`<thead><tr><th>Comprobante</th><th>Fecha sist.</th><th>NIT / Doc.</th><th>Tercero</th><th>Concepto</th><th class="num">Valor sistema</th><th>Estado</th><th>Fecha banco</th><th class="num">Valor banco</th><th>Cód.</th><th class="num">Diferencia</th><th class="num">Días desfase</th></tr></thead><tbody>`;
   for(const s of rows){
-    h+=`<tr class="${CLS[s.estado]||''}"><td>${esc(s.comp)}</td><td>${fmtDate(s.fecha)}</td><td>${esc(s.doc||'')}</td><td>${esc(s.terc||'(sin nombre)')}</td><td title="${esc(s.concepto)}">${esc(s.concepto)}</td><td class="num">${money(s.valor)}</td><td>${badge(s.estado)}</td><td>${s.b?fmtDate(s.b.fecha):''}</td><td class="num">${s.b?money(s.b.valor):''}</td><td>${s.b?esc(s.b.cod):''}</td><td class="num ${s.dif?'neg':''}">${s.dif?money(s.dif):(s.b?money(0):'')}</td><td class="num">${s.dias!==null&&s.dias!==undefined?s.dias:''}</td></tr>`;
+    h+=`<tr class="${CLS[s.estado]||''}"><td>${esc(s.comp)}</td><td>${fmtDate(s.fecha)}</td><td>${esc(s.doc||'')}</td><td>${esc(s.terc||'(sin nombre)')}</td><td title="${esc(s.concepto)}">${esc(s.concepto)}</td><td class="num">${money(s.valor)}</td><td>${badge(s.estado)}</td><td>${s.b?fmtDate(s.b.fecha):''}</td><td class="num">${s.b?money(s.b.valor):''}</td><td>${s.b?esc(s.b.cod||''):''}</td><td class="num ${s.dif?'neg':''}">${s.dif?money(s.dif):(s.b?money(0):'')}</td><td class="num">${s.dias!==null&&s.dias!==undefined?s.dias:''}</td></tr>`;
   }
   document.getElementById('tConc').innerHTML=h+'</tbody>';
 }
